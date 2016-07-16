@@ -1,6 +1,6 @@
-package com.hitherejoe.mvpboilerplate.util;
+package com.name.mvpboilerplate.util;
 
-import com.hitherejoe.mvpboilerplate.R;
+import com.name.mvpboilerplate.R;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;

@@ -1,4 +1,4 @@
-package com.hitherejoe.mvpboilerplate.runner;
+package com.name.mvpboilerplate.runner;
 
 import android.annotation.SuppressLint;
 import android.app.Application;

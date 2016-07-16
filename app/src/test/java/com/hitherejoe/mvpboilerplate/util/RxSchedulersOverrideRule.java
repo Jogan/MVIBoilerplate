@@ -1,4 +1,4 @@
-package com.hitherejoe.mvpboilerplate.util;
+package com.name.mvpboilerplate.util;
 
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
