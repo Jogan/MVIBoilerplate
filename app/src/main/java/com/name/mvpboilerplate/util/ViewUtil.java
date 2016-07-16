@@ -3,6 +3,7 @@ package com.name.mvpboilerplate.util;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 public final class ViewUtil {
@@ -21,6 +22,10 @@ public final class ViewUtil {
         InputMethodManager imm =
                 (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(), 0);
+    }
+
+    public static void setVisible(View view, boolean isVisible) {
+        view.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
 }
