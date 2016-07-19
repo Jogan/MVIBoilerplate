@@ -27,16 +27,16 @@ public class DetailActivity extends BaseActivity implements DetailMvpView, Error
 
     public static final String EXTRA_POKEMON_NAME = "EXTRA_POKEMON_NAME";
 
-    @Inject DetailPresenter mDetailPresenter;
+    @Inject DetailPresenter detailPresenter;
 
-    @BindView(R.id.view_error) ErrorView mErrorView;
-    @BindView(R.id.image_pokemon) ImageView mPokemonImage;
-    @BindView(R.id.progress) ProgressBar mProgress;
-    @BindView(R.id.toolbar) Toolbar mToolbar;
-    @BindView(R.id.layout_stats) LinearLayout mStatLayout;
-    @BindView(R.id.layout_pokemon) View mPokemonLayout;
+    @BindView(R.id.view_error) ErrorView errorView;
+    @BindView(R.id.image_pokemon) ImageView pokemonImage;
+    @BindView(R.id.progress) ProgressBar progress;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.layout_stats) LinearLayout statLayout;
+    @BindView(R.id.layout_pokemon) View pokemonLayout;
 
-    private String mPokemonName;
+    private String pokemonName;
 
     public static Intent getStartIntent(Context context, String pokemonName) {
         Intent intent = new Intent(context, DetailActivity.class);
@@ -50,27 +50,27 @@ public class DetailActivity extends BaseActivity implements DetailMvpView, Error
         activityComponent().inject(this);
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
-        mDetailPresenter.attachView(this);
+        detailPresenter.attachView(this);
 
-        mPokemonName = getIntent().getStringExtra(EXTRA_POKEMON_NAME);
-        if (mPokemonName == null) {
+        pokemonName = getIntent().getStringExtra(EXTRA_POKEMON_NAME);
+        if (pokemonName == null) {
             throw new IllegalArgumentException("Detail Activity requires a pokemon name@");
         }
 
-        setSupportActionBar(mToolbar);
+        setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
-        setTitle(mPokemonName.substring(0, 1).toUpperCase() + mPokemonName.substring(1));
+        setTitle(pokemonName.substring(0, 1).toUpperCase() + pokemonName.substring(1));
 
-        mErrorView.setErrorListener(this);
+        errorView.setErrorListener(this);
 
-        mDetailPresenter.getPokemon(mPokemonName);
+        detailPresenter.getPokemon(pokemonName);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mDetailPresenter.detachView();
+        detailPresenter.detachView();
     }
 
     @Override
@@ -78,32 +78,32 @@ public class DetailActivity extends BaseActivity implements DetailMvpView, Error
         if (pokemon.sprites != null && pokemon.sprites.frontDefault != null) {
             Glide.with(this)
                     .load(pokemon.sprites.frontDefault)
-                    .into(mPokemonImage);
+                    .into(pokemonImage);
         }
-        mPokemonLayout.setVisibility(View.VISIBLE);
+        pokemonLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showStat(Statistic statistic) {
         StatisticView statisticView = new StatisticView(this);
         statisticView.setStat(statistic);
-        mStatLayout.addView(statisticView);
+        statLayout.addView(statisticView);
     }
 
     @Override
     public void showProgress(boolean show) {
-        mErrorView.setVisibility(View.GONE);
-        mProgress.setVisibility(show ? View.VISIBLE : View.GONE);
+        errorView.setVisibility(View.GONE);
+        progress.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     @Override
     public void showError() {
-        mPokemonLayout.setVisibility(View.GONE);
-        mErrorView.setVisibility(View.VISIBLE);
+        pokemonLayout.setVisibility(View.GONE);
+        errorView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onReloadData() {
-        mDetailPresenter.getPokemon(mPokemonName);
+        detailPresenter.getPokemon(pokemonName);
     }
 }

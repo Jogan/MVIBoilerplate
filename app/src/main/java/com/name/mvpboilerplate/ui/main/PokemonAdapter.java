@@ -18,20 +18,20 @@ import butterknife.ButterKnife;
 
 public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.PokemonViewHolder> {
 
-    private List<String> mPokemon;
-    private ClickListener mClickListener;
+    private List<String> pokemon;
+    private ClickListener clickListener;
 
     @Inject
     public PokemonAdapter() {
-        mPokemon = Collections.emptyList();
+        pokemon = Collections.emptyList();
     }
 
     public void setPokemon(List<String> pokemon) {
-        mPokemon = pokemon;
+        this.pokemon = pokemon;
     }
 
     public void setClickListener(ClickListener clickListener) {
-        mClickListener = clickListener;
+        this.clickListener = clickListener;
     }
 
     @Override
@@ -44,21 +44,21 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.PokemonV
 
     @Override
     public void onBindViewHolder(PokemonViewHolder holder, int position) {
-        String pokemon = mPokemon.get(position);
-        holder.mPokemon = pokemon;
+        String pokemon = this.pokemon.get(position);
+        holder.pokemon = pokemon;
         holder.nameText.setText(pokemon.substring(0, 1).toUpperCase() + pokemon.substring(1));
     }
 
     @Override
     public int getItemCount() {
-        return mPokemon.size();
+        return pokemon.size();
     }
 
     class PokemonViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.text_name) TextView nameText;
 
-        public String mPokemon;
+        public String pokemon;
 
         public PokemonViewHolder(View itemView) {
             super(itemView);
@@ -66,7 +66,7 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.PokemonV
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mClickListener != null) mClickListener.onPokemonClick(mPokemon);
+                    if (clickListener != null) clickListener.onPokemonClick(pokemon);
                 }
             });
         }

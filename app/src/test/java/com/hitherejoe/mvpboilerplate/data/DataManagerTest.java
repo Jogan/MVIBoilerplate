@@ -26,16 +26,16 @@ import static org.mockito.Mockito.when;
 public class DataManagerTest {
 
     @Mock
-    MvpBoilerplateService mMockMvpBoilerplateService;
-    DataManager mDataManager;
+    MvpBoilerplateService mockMvpBoilerplateService;
+    DataManager dataManager;
 
     @Rule
     // Must be added to every test class that targets app code that uses RxJava
-    public final RxSchedulersOverrideRule mOverrideSchedulersRule = new RxSchedulersOverrideRule();
+    public final RxSchedulersOverrideRule overrideSchedulersRule = new RxSchedulersOverrideRule();
 
     @Before
     public void setUp() {
-        mDataManager = new DataManager(mMockMvpBoilerplateService);
+        dataManager = new DataManager(mockMvpBoilerplateService);
     }
 
     @Test
@@ -45,11 +45,11 @@ public class DataManagerTest {
                 new MvpBoilerplateService.PokemonListResponse();
         pokemonListResponse.results = namedResourceList;
 
-        when(mMockMvpBoilerplateService.getPokemonList(anyInt()))
+        when(mockMvpBoilerplateService.getPokemonList(anyInt()))
                 .thenReturn(Single.just(pokemonListResponse));
 
         TestSubscriber<List<String>> testSubscriber = new TestSubscriber<>();
-        mDataManager.getPokemonList(10).subscribe(testSubscriber);
+        dataManager.getPokemonList(10).subscribe(testSubscriber);
         testSubscriber.assertCompleted();
         testSubscriber.assertValue(TestDataFactory.makePokemonNameList(namedResourceList));
     }
@@ -58,11 +58,11 @@ public class DataManagerTest {
     public void getPokemonCompletesAndEmitsPokemon() {
         String name = "charmander";
         Pokemon pokemon = TestDataFactory.makePokemon(name);
-        when(mMockMvpBoilerplateService.getPokemon(anyString()))
+        when(mockMvpBoilerplateService.getPokemon(anyString()))
                 .thenReturn(Single.just(pokemon));
 
         TestSubscriber<Pokemon> testSubscriber = new TestSubscriber<>();
-        mDataManager.getPokemon(name).subscribe(testSubscriber);
+        dataManager.getPokemon(name).subscribe(testSubscriber);
         testSubscriber.assertCompleted();
         testSubscriber.assertValue(pokemon);
     }

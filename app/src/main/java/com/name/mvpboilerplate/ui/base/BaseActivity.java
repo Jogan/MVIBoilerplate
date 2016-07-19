@@ -29,10 +29,10 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private static final String KEY_ACTIVITY_ID = "KEY_ACTIVITY_ID";
     private static final AtomicLong NEXT_ID = new AtomicLong(0);
-    private static final Map<Long, ConfigPersistentComponent> sComponentsMap = new HashMap<>();
+    private static final Map<Long, ConfigPersistentComponent> componentsMap = new HashMap<>();
 
-    private ActivityComponent mActivityComponent;
-    private long mActivityId;
+    private ActivityComponent activityComponent;
+    private long activityId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,34 +40,34 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         // Create the ActivityComponent and reuses cached ConfigPersistentComponent if this is
         // being called after a configuration change.
-        mActivityId = savedInstanceState != null ?
+        activityId = savedInstanceState != null ?
                 savedInstanceState.getLong(KEY_ACTIVITY_ID) : NEXT_ID.getAndIncrement();
         ConfigPersistentComponent configPersistentComponent;
-        if (!sComponentsMap.containsKey(mActivityId)) {
-            Timber.i("Creating new ConfigPersistentComponent id=%d", mActivityId);
+        if (!componentsMap.containsKey(activityId)) {
+            Timber.i("Creating new ConfigPersistentComponent id=%d", activityId);
             configPersistentComponent = DaggerConfigPersistentComponent.builder()
                     .applicationComponent(MvpBoilerplateApplication.get(this).getComponent())
                     .build();
-            sComponentsMap.put(mActivityId, configPersistentComponent);
+            componentsMap.put(activityId, configPersistentComponent);
         } else {
-            Timber.i("Reusing ConfigPersistentComponent id=%d", mActivityId);
-            configPersistentComponent = sComponentsMap.get(mActivityId);
+            Timber.i("Reusing ConfigPersistentComponent id=%d", activityId);
+            configPersistentComponent = componentsMap.get(activityId);
         }
-        mActivityComponent = configPersistentComponent.activityComponent(new ActivityModule(this));
-        mActivityComponent.inject(this);
+        activityComponent = configPersistentComponent.activityComponent(new ActivityModule(this));
+        activityComponent.inject(this);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putLong(KEY_ACTIVITY_ID, mActivityId);
+        outState.putLong(KEY_ACTIVITY_ID, activityId);
     }
 
     @Override
     protected void onDestroy() {
         if (!isChangingConfigurations()) {
-            Timber.i("Clearing ConfigPersistentComponent id=%d", mActivityId);
-            sComponentsMap.remove(mActivityId);
+            Timber.i("Clearing ConfigPersistentComponent id=%d", activityId);
+            componentsMap.remove(activityId);
         }
         super.onDestroy();
     }
@@ -84,7 +84,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public ActivityComponent activityComponent() {
-        return mActivityComponent;
+        return activityComponent;
     }
 
 }

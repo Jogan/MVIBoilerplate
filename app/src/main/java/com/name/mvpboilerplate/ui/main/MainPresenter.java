@@ -18,31 +18,31 @@ import timber.log.Timber;
 @ConfigPersistent
 public class MainPresenter extends BasePresenter<MainMvpView> {
 
-    private final DataManager mDataManager;
-    private CompositeSubscription mSubscriptions;
+    private final DataManager dataManager;
+    private CompositeSubscription subscriptions;
 
     @Inject
     public MainPresenter(DataManager dataManager) {
-        mDataManager = dataManager;
+        this.dataManager = dataManager;
     }
 
     @Override
     public void attachView(MainMvpView mvpView) {
         super.attachView(mvpView);
-        mSubscriptions = new CompositeSubscription();
+        subscriptions = new CompositeSubscription();
     }
 
     @Override
     public void detachView() {
         super.detachView();
-        mSubscriptions.unsubscribe();
-        mSubscriptions = null;
+        subscriptions.unsubscribe();
+        subscriptions = null;
     }
 
     public void getPokemon(int limit) {
         checkViewAttached();
         getMvpView().showProgress(true);
-        mSubscriptions.add(mDataManager.getPokemonList(limit)
+        subscriptions.add(dataManager.getPokemonList(limit)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new SingleSubscriber<List<String>>() {

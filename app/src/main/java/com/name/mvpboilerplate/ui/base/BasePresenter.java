@@ -10,24 +10,24 @@ import rx.Single;
  */
 public class BasePresenter<T extends MvpView> implements Presenter<T> {
 
-    private T mMvpView;
+    private T mvpView;
 
     @Override
     public void attachView(T mvpView) {
-        mMvpView = mvpView;
+        this.mvpView = mvpView;
     }
 
     @Override
     public void detachView() {
-        mMvpView = null;
+        mvpView = null;
     }
 
     public boolean isViewAttached() {
-        return mMvpView != null;
+        return mvpView != null;
     }
 
     public T getMvpView() {
-        return mMvpView;
+        return mvpView;
     }
 
     public void checkViewAttached() {
@@ -49,29 +49,29 @@ public class BasePresenter<T extends MvpView> implements Presenter<T> {
      */
     protected static class DataResult<T> {
 
-        private T mData;
-        private Throwable mError;
+        private T data;
+        private Throwable error;
 
         public DataResult(T data) {
-            mData = data;
+            this.data = data;
         }
 
         public DataResult(Throwable error) {
-            mError = error;
+            this.error = error;
         }
 
         public Single<T> toSingle() {
-            if (mError != null) {
-                return Single.error(mError);
+            if (error != null) {
+                return Single.error(error);
             }
-            return Single.just(mData);
+            return Single.just(data);
         }
 
         public Observable<T> toObservable() {
-            if (mError != null) {
-                return Observable.error(mError);
+            if (error != null) {
+                return Observable.error(error);
             }
-            return Observable.just(mData);
+            return Observable.just(data);
         }
     }
 }

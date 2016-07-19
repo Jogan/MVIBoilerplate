@@ -14,28 +14,28 @@ import static android.os.PowerManager.ON_AFTER_RELEASE;
 
 public class UnlockDeviceAndroidJUnitRunner extends AndroidJUnitRunner {
 
-    private PowerManager.WakeLock mWakeLock;
+    private PowerManager.WakeLock wakeLock;
 
     @SuppressLint("MissingPermission")
     @Override
     public void onStart() {
-        Application application = (Application) getTargetContext().getApplicationContext();
-        String simpleName = UnlockDeviceAndroidJUnitRunner.class.getSimpleName();
+        final Application application = (Application) getTargetContext().getApplicationContext();
+        final String simpleName = UnlockDeviceAndroidJUnitRunner.class.getSimpleName();
         // Unlock the device so that the tests can input keystrokes.
         ((KeyguardManager) application.getSystemService(KEYGUARD_SERVICE))
                 .newKeyguardLock(simpleName)
                 .disableKeyguard();
         // Wake up the screen.
-        PowerManager powerManager = ((PowerManager) application.getSystemService(POWER_SERVICE));
-        mWakeLock = powerManager.newWakeLock(FULL_WAKE_LOCK | ACQUIRE_CAUSES_WAKEUP |
+        final PowerManager powerManager = ((PowerManager) application.getSystemService(POWER_SERVICE));
+        wakeLock = powerManager.newWakeLock(FULL_WAKE_LOCK | ACQUIRE_CAUSES_WAKEUP |
                 ON_AFTER_RELEASE, simpleName);
-        mWakeLock.acquire();
+        wakeLock.acquire();
         super.onStart();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mWakeLock.release();
+        wakeLock.release();
     }
 }

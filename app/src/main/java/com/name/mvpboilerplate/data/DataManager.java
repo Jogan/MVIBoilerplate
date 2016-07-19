@@ -17,15 +17,15 @@ import rx.functions.Func1;
 @Singleton
 public class DataManager {
 
-    private final MvpBoilerplateService mMvpBoilerplateService;
+    private final MvpBoilerplateService mvpBoilerplateService;
 
     @Inject
     public DataManager(MvpBoilerplateService mvpBoilerplateService) {
-        mMvpBoilerplateService = mvpBoilerplateService;
+        this.mvpBoilerplateService = mvpBoilerplateService;
     }
 
     public Single<List<String>> getPokemonList(int limit) {
-        return mMvpBoilerplateService.getPokemonList(limit)
+        return mvpBoilerplateService.getPokemonList(limit)
                 .flatMap(new Func1<MvpBoilerplateService.PokemonListResponse,
                         Single<? extends List<String>>>() {
                             @Override
@@ -41,7 +41,7 @@ public class DataManager {
     }
 
     public Single<Pokemon> getPokemon(String name) {
-        return mMvpBoilerplateService.getPokemon(name);
+        return mvpBoilerplateService.getPokemon(name);
     }
 
 }

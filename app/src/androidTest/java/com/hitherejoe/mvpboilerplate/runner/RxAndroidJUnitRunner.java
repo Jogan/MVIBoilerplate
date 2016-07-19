@@ -19,7 +19,7 @@ public class RxAndroidJUnitRunner extends UnlockDeviceAndroidJUnitRunner {
     @Override
     public void onCreate(Bundle arguments) {
         super.onCreate(arguments);
-        RxIdlingResource rxIdlingResource = new RxIdlingResource();
+        final RxIdlingResource rxIdlingResource = new RxIdlingResource();
         RxJavaPlugins.getInstance()
                 .registerObservableExecutionHook(new RxIdlingExecutionHook(rxIdlingResource));
         Espresso.registerIdlingResources(rxIdlingResource);
