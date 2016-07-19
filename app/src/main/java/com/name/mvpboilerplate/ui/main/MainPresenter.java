@@ -2,7 +2,7 @@ package com.name.mvpboilerplate.ui.main;
 
 
 import com.name.mvpboilerplate.data.DataManager;
-import com.name.mvpboilerplate.injection.ConfigPersistent;
+import com.name.mvpboilerplate.dagger.ConfigPersistent;
 import com.name.mvpboilerplate.ui.base.BasePresenter;
 
 import java.util.List;

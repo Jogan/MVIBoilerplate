@@ -1,11 +1,11 @@
-package com.name.mvpboilerplate.injection.module;
+package com.name.mvpboilerplate.dagger.module;
 
 import android.app.Application;
 import android.content.Context;
 
 import com.name.mvpboilerplate.data.remote.MvpBoilerplateService;
 import com.name.mvpboilerplate.data.remote.MvpBoilerplateServiceFactory;
-import com.name.mvpboilerplate.injection.ApplicationContext;
+import com.name.mvpboilerplate.dagger.ApplicationContext;
 
 import javax.inject.Singleton;
 

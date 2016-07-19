@@ -1,7 +1,7 @@
-package com.name.mvpboilerplate.injection.component;
+package com.name.mvpboilerplate.dagger.component;
 
-import com.name.mvpboilerplate.injection.PerFragment;
-import com.name.mvpboilerplate.injection.module.FragmentModule;
+import com.name.mvpboilerplate.dagger.PerFragment;
+import com.name.mvpboilerplate.dagger.module.FragmentModule;
 
 import dagger.Subcomponent;
 

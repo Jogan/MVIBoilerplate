@@ -5,7 +5,7 @@ import android.content.Context;
 
 import com.name.mvpboilerplate.data.DataManager;
 import com.name.mvpboilerplate.data.remote.MvpBoilerplateService;
-import com.name.mvpboilerplate.injection.ApplicationContext;
+import com.name.mvpboilerplate.dagger.ApplicationContext;
 
 import javax.inject.Singleton;
 

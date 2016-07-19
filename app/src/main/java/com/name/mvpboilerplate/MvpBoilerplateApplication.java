@@ -3,9 +3,9 @@ package com.name.mvpboilerplate;
 import android.app.Application;
 import android.content.Context;
 
-import com.name.mvpboilerplate.injection.component.ApplicationComponent;
-import com.name.mvpboilerplate.injection.component.DaggerApplicationComponent;
-import com.name.mvpboilerplate.injection.module.ApplicationModule;
+import com.name.mvpboilerplate.dagger.component.ApplicationComponent;
+import com.name.mvpboilerplate.dagger.component.DaggerApplicationComponent;
+import com.name.mvpboilerplate.dagger.module.ApplicationModule;
 
 import timber.log.Timber;
 

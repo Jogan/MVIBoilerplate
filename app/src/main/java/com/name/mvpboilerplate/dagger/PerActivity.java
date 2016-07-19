@@ -1,4 +1,4 @@
-package com.name.mvpboilerplate.injection;
+package com.name.mvpboilerplate.dagger;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -7,10 +7,10 @@ import javax.inject.Scope;
 
 /**
  * A scoping annotation to permit objects whose lifetime should
- * conform to the life of the Fragment to be memorised in the
+ * conform to the life of the Activity to be memorised in the
  * correct component.
  */
 @Scope
 @Retention(RetentionPolicy.RUNTIME)
-public @interface PerFragment {
+public @interface PerActivity {
 }

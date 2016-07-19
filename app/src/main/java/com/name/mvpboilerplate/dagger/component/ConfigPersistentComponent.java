@@ -1,8 +1,8 @@
-package com.name.mvpboilerplate.injection.component;
+package com.name.mvpboilerplate.dagger.component;
 
-import com.name.mvpboilerplate.injection.ConfigPersistent;
-import com.name.mvpboilerplate.injection.module.ActivityModule;
-import com.name.mvpboilerplate.injection.module.FragmentModule;
+import com.name.mvpboilerplate.dagger.ConfigPersistent;
+import com.name.mvpboilerplate.dagger.module.ActivityModule;
+import com.name.mvpboilerplate.dagger.module.FragmentModule;
 import com.name.mvpboilerplate.ui.base.BaseActivity;
 import com.name.mvpboilerplate.ui.base.BaseFragment;
 

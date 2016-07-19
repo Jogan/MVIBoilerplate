@@ -1,6 +1,6 @@
-package com.name.mvpboilerplate.injection;
+package com.name.mvpboilerplate.dagger;
 
-import com.name.mvpboilerplate.injection.component.ConfigPersistentComponent;
+import com.name.mvpboilerplate.dagger.component.ConfigPersistentComponent;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

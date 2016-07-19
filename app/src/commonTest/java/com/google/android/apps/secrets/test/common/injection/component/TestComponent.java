@@ -1,7 +1,7 @@
 package com.google.android.apps.secrets.test.common.injection.component;
 
 import com.google.android.apps.secrets.test.common.injection.module.ApplicationTestModule;
-import com.name.mvpboilerplate.injection.component.ApplicationComponent;
+import com.name.mvpboilerplate.dagger.component.ApplicationComponent;
 
 import javax.inject.Singleton;
 

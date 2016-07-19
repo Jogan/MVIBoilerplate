@@ -26,18 +26,13 @@ public class DataManager {
 
     public Single<List<String>> getPokemonList(int limit) {
         return mvpBoilerplateService.getPokemonList(limit)
-                .flatMap(new Func1<MvpBoilerplateService.PokemonListResponse,
-                        Single<? extends List<String>>>() {
-                            @Override
-                            public Single<? extends List<String>>
-                                    call(PokemonListResponse pokemonListResponse) {
-                                List<String> pokemonNames = new ArrayList<>();
-                                for (NamedResource pokemon : pokemonListResponse.results) {
-                                    pokemonNames.add(pokemon.name);
-                                }
-                                return Single.just(pokemonNames);
-                            }
-                        });
+                .flatMap(pokemonListResponse -> {
+                    List<String> pokemonNames = new ArrayList<>();
+                    for (NamedResource pokemon : pokemonListResponse.results) {
+                        pokemonNames.add(pokemon.name);
+                    }
+                    return Single.just(pokemonNames);
+                });
     }
 
     public Single<Pokemon> getPokemon(String name) {

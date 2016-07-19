@@ -5,10 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.name.mvpboilerplate.MvpBoilerplateApplication;
-import com.name.mvpboilerplate.injection.component.ActivityComponent;
-import com.name.mvpboilerplate.injection.component.ConfigPersistentComponent;
-import com.name.mvpboilerplate.injection.component.DaggerConfigPersistentComponent;
-import com.name.mvpboilerplate.injection.module.ActivityModule;
+import com.name.mvpboilerplate.dagger.component.ActivityComponent;
+import com.name.mvpboilerplate.dagger.component.ConfigPersistentComponent;
+import com.name.mvpboilerplate.dagger.component.DaggerConfigPersistentComponent;
+import com.name.mvpboilerplate.dagger.module.ActivityModule;
 
 import java.util.HashMap;
 import java.util.Map;

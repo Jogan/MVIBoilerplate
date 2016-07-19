@@ -4,7 +4,7 @@ package com.name.mvpboilerplate.ui.detail;
 import com.name.mvpboilerplate.data.DataManager;
 import com.name.mvpboilerplate.data.model.Pokemon;
 import com.name.mvpboilerplate.data.model.Statistic;
-import com.name.mvpboilerplate.injection.ConfigPersistent;
+import com.name.mvpboilerplate.dagger.ConfigPersistent;
 import com.name.mvpboilerplate.ui.base.BasePresenter;
 
 import javax.inject.Inject;

@@ -1,4 +1,4 @@
-package com.name.mvpboilerplate.injection;
+package com.name.mvpboilerplate.dagger;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -7,5 +7,5 @@ import javax.inject.Qualifier;
 
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ApplicationContext {
+public @interface ActivityContext {
 }

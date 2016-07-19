@@ -5,10 +5,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.name.mvpboilerplate.MvpBoilerplateApplication;
-import com.name.mvpboilerplate.injection.component.ConfigPersistentComponent;
-import com.name.mvpboilerplate.injection.component.DaggerConfigPersistentComponent;
-import com.name.mvpboilerplate.injection.component.FragmentComponent;
-import com.name.mvpboilerplate.injection.module.FragmentModule;
+import com.name.mvpboilerplate.dagger.component.ConfigPersistentComponent;
+import com.name.mvpboilerplate.dagger.component.DaggerConfigPersistentComponent;
+import com.name.mvpboilerplate.dagger.component.FragmentComponent;
+import com.name.mvpboilerplate.dagger.module.FragmentModule;
 
 import java.util.HashMap;
 import java.util.Map;

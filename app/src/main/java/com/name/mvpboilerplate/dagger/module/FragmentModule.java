@@ -1,10 +1,10 @@
-package com.name.mvpboilerplate.injection.module;
+package com.name.mvpboilerplate.dagger.module;
 
 import android.app.Activity;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 
-import com.name.mvpboilerplate.injection.ActivityContext;
+import com.name.mvpboilerplate.dagger.ActivityContext;
 
 import dagger.Module;
 import dagger.Provides;
