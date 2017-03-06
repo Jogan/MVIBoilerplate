@@ -1,10 +1,10 @@
-package com.hitherejoe.mvpboilerplate.data;
+package com.name.mvpboilerplate.data;
 
 import com.google.android.apps.secrets.test.common.TestDataFactory;
-import com.hitherejoe.mvpboilerplate.data.model.NamedResource;
-import com.hitherejoe.mvpboilerplate.data.model.Pokemon;
-import com.hitherejoe.mvpboilerplate.data.remote.MvpBoilerplateService;
-import com.hitherejoe.mvpboilerplate.util.RxSchedulersOverrideRule;
+import com.name.mvpboilerplate.data.model.NamedResource;
+import com.name.mvpboilerplate.data.model.Pokemon;
+import com.name.mvpboilerplate.data.remote.MvpBoilerplateService;
+import com.name.mvpboilerplate.util.RxSchedulersOverrideRule;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -26,16 +26,16 @@ import static org.mockito.Mockito.when;
 public class DataManagerTest {
 
     @Mock
-    MvpBoilerplateService mMockMvpBoilerplateService;
-    DataManager mDataManager;
+    MvpBoilerplateService mockMvpBoilerplateService;
+    DataManager dataManager;
 
     @Rule
     // Must be added to every test class that targets app code that uses RxJava
-    public final RxSchedulersOverrideRule mOverrideSchedulersRule = new RxSchedulersOverrideRule();
+    public final RxSchedulersOverrideRule overrideSchedulersRule = new RxSchedulersOverrideRule();
 
     @Before
     public void setUp() {
-        mDataManager = new DataManager(mMockMvpBoilerplateService);
+        dataManager = new DataManager(mockMvpBoilerplateService);
     }
 
     @Test
@@ -45,11 +45,11 @@ public class DataManagerTest {
                 new MvpBoilerplateService.PokemonListResponse();
         pokemonListResponse.results = namedResourceList;
 
-        when(mMockMvpBoilerplateService.getPokemonList(anyInt()))
+        when(mockMvpBoilerplateService.getPokemonList(anyInt()))
                 .thenReturn(Single.just(pokemonListResponse));
 
         TestSubscriber<List<String>> testSubscriber = new TestSubscriber<>();
-        mDataManager.getPokemonList(10).subscribe(testSubscriber);
+        dataManager.getPokemonList(10).subscribe(testSubscriber);
         testSubscriber.assertCompleted();
         testSubscriber.assertValue(TestDataFactory.makePokemonNameList(namedResourceList));
     }
@@ -58,11 +58,11 @@ public class DataManagerTest {
     public void getPokemonCompletesAndEmitsPokemon() {
         String name = "charmander";
         Pokemon pokemon = TestDataFactory.makePokemon(name);
-        when(mMockMvpBoilerplateService.getPokemon(anyString()))
+        when(mockMvpBoilerplateService.getPokemon(anyString()))
                 .thenReturn(Single.just(pokemon));
 
         TestSubscriber<Pokemon> testSubscriber = new TestSubscriber<>();
-        mDataManager.getPokemon(name).subscribe(testSubscriber);
+        dataManager.getPokemon(name).subscribe(testSubscriber);
         testSubscriber.assertCompleted();
         testSubscriber.assertValue(pokemon);
     }

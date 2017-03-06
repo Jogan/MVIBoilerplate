@@ -1,3 +1,5 @@
+apply from: 'buildsystem/dependencies.gradle'
+
 buildscript {
     repositories {
         jcenter()
@@ -12,6 +14,18 @@ allprojects {
     repositories {
         jcenter()
     }
+}
+
+ext {
+    versionName = "1.0" // default version name
+    versionCode = 1 // local build version code
+    // android build settings
+    androidBuildToolsVersion = "23.0.3"
+    androidMinSdkVersion = 16
+    androidTargetSdkVersion = 24
+    // packages for our project
+    androidApplicationIdStage = "com.name.mvpboilerplate.stage"
+    androidApplicationIdProduction = "com.name.mvpboilerplate"
 }
 
 task clean(type: Delete) {

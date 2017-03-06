@@ -1,9 +1,9 @@
 package com.google.android.apps.secrets.test.common;
 
-import com.hitherejoe.mvpboilerplate.data.model.NamedResource;
-import com.hitherejoe.mvpboilerplate.data.model.Pokemon;
-import com.hitherejoe.mvpboilerplate.data.model.Sprites;
-import com.hitherejoe.mvpboilerplate.data.model.Statistic;
+import com.name.mvpboilerplate.data.model.NamedResource;
+import com.name.mvpboilerplate.data.model.Pokemon;
+import com.name.mvpboilerplate.data.model.Sprites;
+import com.name.mvpboilerplate.data.model.Statistic;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.UUID;
  */
 public class TestDataFactory {
 
-    private static final Random sRandom = new Random();
+    private static final Random random = new Random();
 
     public static String randomUuid() {
         return UUID.randomUUID().toString();
@@ -49,7 +49,7 @@ public class TestDataFactory {
 
     public static Statistic makeStatistic() {
         Statistic statistic = new Statistic();
-        statistic.baseStat = sRandom.nextInt();
+        statistic.baseStat = random.nextInt();
         statistic.stat = makeNamedResource(randomUuid());
         return statistic;
     }

@@ -1,4 +1,4 @@
-package com.hitherejoe.mvpboilerplate;
+package com.name.mvpboilerplate;
 
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
@@ -6,10 +6,10 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.google.android.apps.secrets.test.common.TestComponentRule;
 import com.google.android.apps.secrets.test.common.TestDataFactory;
-import com.hitherejoe.mvpboilerplate.data.model.NamedResource;
-import com.hitherejoe.mvpboilerplate.data.model.Pokemon;
-import com.hitherejoe.mvpboilerplate.ui.main.MainActivity;
-import com.hitherejoe.mvpboilerplate.util.ErrorTestUtil;
+import com.name.mvpboilerplate.data.model.NamedResource;
+import com.name.mvpboilerplate.data.model.Pokemon;
+import com.name.mvpboilerplate.ui.main.MainActivity;
+import com.name.mvpboilerplate.util.ErrorTestUtil;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -68,7 +68,7 @@ public class MainActivityTest {
         onView(withText(pokemonList.get(0)))
                 .perform(click());
 
-        onView(withId(R.id.image_pokemon))
+        onView(withId(com.name.mvpboilerplate.R.id.image_pokemon))
                 .check(matches(isDisplayed()));
     }
 

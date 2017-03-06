@@ -1,27 +1,73 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'me.tatarka:gradle-retrolambda:3.2.5'
+    }
+}
+
 apply plugin: 'com.android.application'
-apply from: '../config/quality/quality.gradle'
+apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.neenbedankt.android-apt'
 
+apply from: '../buildsystem/dependencies.gradle'
+apply from: '../config/quality/quality.gradle'
+
+def globalConf = rootProject.ext
+
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    compileSdkVersion globalConf.androidTargetSdkVersion
+    buildToolsVersion globalConf.androidBuildToolsVersion
 
     defaultConfig {
-        applicationId "com.hitherejoe.mvpboilerplate"
-        minSdkVersion 18
-        targetSdkVersion 23
-        testInstrumentationRunner "${applicationId}.runner.RxAndroidJUnitRunner"
-        versionCode 1000
-        // Major -> Millions, Minor -> Thousands, Bugfix -> Hundreds. E.g 1.3.72 == 1,003,072
-        versionName '0.1.0'
+        minSdkVersion globalConf.androidMinSdkVersion
+        targetSdkVersion globalConf.androidTargetSdkVersion
 
-        buildConfigField("String", "POKEAPI_API_URL",
-                "\"${PokeapiApiUrl}\"")
+        versionCode VersionCodeReader.getVersionCode(globalConf.versionCode)
+        // Major -> Millions
+        // Minor -> Thousands
+        // Bugfix -> Hundreds
+        // E.g 1.3.72 == 1,003,072
+        versionName globalConf.versionName
+
+        multiDexEnabled true
+        testInstrumentationRunner "com.name.mvpboilerplate.runner.RxAndroidJUnitRunner"
+
+        buildConfigField("String", "POKEAPI_API_URL", "\"${PokeapiApiUrl}\"")
     }
+
+    dexOptions {
+        incremental true
+        maxProcessCount 4
+        javaMaxHeapSize "5g"
+    }
+
+    productFlavors {
+        stage {
+            applicationId globalConf.androidApplicationIdStage
+            // specific api keys for version go here
+        }
+        production {
+            applicationId globalConf.androidApplicationIdProduction
+            // specific api keys for version go here
+        }
+    }
+
     buildTypes {
+        debug {
+            applicationIdSuffix '.debug'
+            testCoverageEnabled true
+            debuggable true
+            minifyEnabled false
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debuggable.initWith(buildTypes.debug)
+        debuggable {
+            testCoverageEnabled = false
         }
     }
 
@@ -33,85 +79,101 @@ android {
         androidTest {
             java.srcDir commonTestDir
         }
+        debuggable {
+            res.srcDirs = ['src/debug/res']
+            java.srcDirs = ['src/debug/java']
+        }
     }
 
     //Needed because of this https://github.com/square/okio/issues/58
     lintOptions {
         warning 'InvalidPackage'
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    packagingOptions {
+        exclude 'LICENSE.txt'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
 }
 
 dependencies {
-    final SUPPORT_LIBRARY_VERSION = '23.4.0'
-    final RETROFIT_VERSION = '2.0.2'
-    final OKHTTP_VERSION = '3.2.0'
-    final DAGGER_VERSION = '2.5'
-    final DEXMAKER_VERSION = '1.4'
-    final HAMCREST_VERSION = '1.3'
-    final ESPRESSO_VERSION = '2.2.2'
-    final RUNNER_VERSION = '0.4'
-    final BUTTERKNIFE_VERSION = '8.0.1'
-
-    def daggerCompiler = "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
-    def jUnit = "junit:junit:4.12"
-    def mockito = "org.mockito:mockito-core:1.10.19"
+    Map<String, String> dependencies = globalConf.dependencies;
 
     // App Dependencies
-    compile "com.android.support:appcompat-v7:$SUPPORT_LIBRARY_VERSION"
-    compile "com.android.support:recyclerview-v7:$SUPPORT_LIBRARY_VERSION"
-    compile "com.android.support:cardview-v7:$SUPPORT_LIBRARY_VERSION"
-    compile "com.android.support:design:$SUPPORT_LIBRARY_VERSION"
-    compile "com.android.support:support-annotations:$SUPPORT_LIBRARY_VERSION"
+    compile dependencies.supportV4
+    compile dependencies.recyclerView
+    compile dependencies.cardView
+    compile dependencies.supportDesign
+    compile dependencies.supportAnnotations
 
-    compile 'com.squareup.sqlbrite:sqlbrite:0.5.0'
-    compile "com.squareup.retrofit2:retrofit:$RETROFIT_VERSION"
-    compile "com.squareup.retrofit2:converter-gson:$RETROFIT_VERSION"
-    compile "com.squareup.retrofit2:adapter-rxjava:$RETROFIT_VERSION"
-    compile "com.squareup.okhttp3:okhttp:$OKHTTP_VERSION"
-    compile "com.squareup.okhttp3:logging-interceptor:$OKHTTP_VERSION"
+    compile dependencies.sqlBrite
+    compile dependencies.retrofit
+    compile dependencies.retrofitConverterGson
+    compile dependencies.retrofitAdapterRxJava
+    compile dependencies.okhttp
+    compile dependencies.okhttpLogging
 
-    compile 'com.github.bumptech.glide:glide:3.7.0'
-    compile 'io.reactivex:rxandroid:1.1.0'
-    compile 'io.reactivex:rxjava:1.1.4'
-    compile "com.jakewharton:butterknife:$BUTTERKNIFE_VERSION"
-    compile 'com.jakewharton.timber:timber:4.1.0'
+    compile dependencies.glide
+    compile dependencies.rxAndroid
+    compile dependencies.rxJava
+    compile dependencies.butterknife
+    compile dependencies.timber
 
-    compile  "com.google.dagger:dagger:$DAGGER_VERSION"
-    provided 'org.glassfish:javax.annotation:10.0-b28' //Required by Dagger2
+    compile dependencies.dagger
+    provided dependencies.javaXAnnotations //Required by Dagger2
 
     // Instrumentation test dependencies
-    androidTestCompile jUnit
-    androidTestCompile mockito
-    androidTestCompile "com.android.support:support-annotations:$SUPPORT_LIBRARY_VERSION"
-    androidTestCompile("com.android.support.test.espresso:espresso-contrib:$ESPRESSO_VERSION") {
+    androidTestCompile dependencies.jUnit
+    androidTestCompile dependencies.mockito
+    androidTestCompile dependencies.supportAnnotations
+    androidTestCompile(dependencies.espressoContrib) {
         exclude group: 'com.android.support', module: 'appcompat'
         exclude group: 'com.android.support', module: 'design'
         exclude group: 'com.android.support', module: 'support-v4'
         exclude group: 'com.android.support', module: 'recyclerview-v7'
     }
-    androidTestCompile "com.android.support.test.espresso:espresso-core:$ESPRESSO_VERSION"
-    androidTestCompile "com.android.support.test:runner:$RUNNER_VERSION"
-    androidTestCompile "com.android.support.test:rules:$RUNNER_VERSION"
-    androidTestCompile "com.crittercism.dexmaker:dexmaker:$DEXMAKER_VERSION"
-    androidTestCompile "com.crittercism.dexmaker:dexmaker-dx:$DEXMAKER_VERSION"
-    androidTestCompile "com.crittercism.dexmaker:dexmaker-mockito:$DEXMAKER_VERSION"
+    androidTestCompile dependencies.espressoCore
+    androidTestCompile dependencies.testRunner
+    androidTestCompile dependencies.testRunnerRules
+    androidTestCompile dependencies.dexMaker
+    androidTestCompile dependencies.dexMakerDx
+    androidTestCompile dependencies.dexMakerMockito
 
     // Unit tests dependencies
-    testCompile jUnit
-    testCompile mockito
-    testCompile "org.hamcrest:hamcrest-core:$HAMCREST_VERSION"
-    testCompile "org.hamcrest:hamcrest-library:$HAMCREST_VERSION"
-    testCompile "org.hamcrest:hamcrest-integration:$HAMCREST_VERSION"
-    testCompile 'org.robolectric:robolectric:3.0'
+    testCompile dependencies.jUnit
+    testCompile dependencies.mockito
+    testCompile dependencies.hamcrestCore
+    testCompile dependencies.hamcrestLib
+    testCompile dependencies.hamcrestIntegration
+    testCompile dependencies.roboElectric
 
     // APT dependencies
-    apt "com.jakewharton:butterknife-compiler:$BUTTERKNIFE_VERSION"
-    apt daggerCompiler
-    testApt daggerCompiler
-    androidTestApt daggerCompiler
+    apt dependencies.butterknifeCompiler
+    apt dependencies.daggerCompiler
+    testApt dependencies.daggerCompiler
+    androidTestApt dependencies.daggerCompiler
+}
+
+class VersionCodeReader {
+    static def getVersionCode(defaultVersion) {
+        def code = System.env.BUILD_NUMBER != null ? Integer.parseInt(System.env.BUILD_NUMBER) : defaultVersion
+        println code == defaultVersion ? "BUILD_NUMBER not found. Falling back to default version code: $defaultVersion" : "VersionCode is set to $code"
+        return code
+    }
 }
 
 // Log out test results to console
-tasks.matching {it instanceof Test}.all {
+tasks.matching { it instanceof Test }.all {
     testLogging.events = ["failed", "passed", "skipped"]
 }

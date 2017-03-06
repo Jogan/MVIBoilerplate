@@ -3,9 +3,9 @@ package com.google.android.apps.secrets.test.common.injection.module;
 import android.app.Application;
 import android.content.Context;
 
-import com.hitherejoe.mvpboilerplate.data.DataManager;
-import com.hitherejoe.mvpboilerplate.data.remote.MvpBoilerplateService;
-import com.hitherejoe.mvpboilerplate.injection.ApplicationContext;
+import com.name.mvpboilerplate.data.DataManager;
+import com.name.mvpboilerplate.data.remote.MvpBoilerplateService;
+import com.name.mvpboilerplate.dagger.ApplicationContext;
 
 import javax.inject.Singleton;
 
@@ -20,22 +20,22 @@ import static org.mockito.Mockito.mock;
  */
 @Module
 public class ApplicationTestModule {
-    private final Application mApplication;
+    private final Application application;
 
     public ApplicationTestModule(Application application) {
-        mApplication = application;
+        this.application = application;
     }
 
     @Provides
     @Singleton
     Application provideApplication() {
-        return mApplication;
+        return application;
     }
 
     @Provides
     @ApplicationContext
     Context provideContext() {
-        return mApplication;
+        return application;
     }
 
     /************* MOCKS *************/
