@@ -1,10 +1,10 @@
 buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'me.tatarka:gradle-retrolambda:3.2.5'
-    }
+  repositories {
+    jcenter()
+  }
+  dependencies {
+    classpath 'me.tatarka:gradle-retrolambda:3.2.5'
+  }
 }
 
 apply plugin: 'com.android.application'
@@ -17,163 +17,173 @@ apply from: '../config/quality/quality.gradle'
 def globalConf = rootProject.ext
 
 android {
-    compileSdkVersion globalConf.androidTargetSdkVersion
+  compileSdkVersion globalConf.androidTargetSdkVersion
+  buildToolsVersion globalConf.androidBuildToolsVersion
+
+  defaultConfig {
+    minSdkVersion globalConf.androidMinSdkVersion
+    targetSdkVersion globalConf.androidTargetSdkVersion
     buildToolsVersion globalConf.androidBuildToolsVersion
 
-    defaultConfig {
-        minSdkVersion globalConf.androidMinSdkVersion
-        targetSdkVersion globalConf.androidTargetSdkVersion
+    versionCode VersionCodeReader.getVersionCode(globalConf.versionCode)
+    // Major -> Millions
+    // Minor -> Thousands
+    // Bugfix -> Hundreds
+    // E.g 1.3.72 == 1,003,072
+    versionName globalConf.versionName
 
-        versionCode VersionCodeReader.getVersionCode(globalConf.versionCode)
-        // Major -> Millions
-        // Minor -> Thousands
-        // Bugfix -> Hundreds
-        // E.g 1.3.72 == 1,003,072
-        versionName globalConf.versionName
+    multiDexEnabled true
+    testInstrumentationRunner "com.name.mvpboilerplate.runner.RxAndroidJUnitRunner"
 
-        multiDexEnabled true
-        testInstrumentationRunner "com.name.mvpboilerplate.runner.RxAndroidJUnitRunner"
+    buildConfigField("String", "POKEAPI_API_URL", "\"${PokeapiApiUrl}\"")
+  }
 
-        buildConfigField("String", "POKEAPI_API_URL", "\"${PokeapiApiUrl}\"")
+  dexOptions {
+    maxProcessCount 4
+    javaMaxHeapSize "5g"
+  }
+
+  productFlavors {
+    stage {
+      applicationId globalConf.androidApplicationIdStage
+      // specific api keys for version go here
     }
-
-    dexOptions {
-        incremental true
-        maxProcessCount 4
-        javaMaxHeapSize "5g"
+    production {
+      applicationId globalConf.androidApplicationIdProduction
+      // specific api keys for version go here
     }
+  }
 
-    productFlavors {
-        stage {
-            applicationId globalConf.androidApplicationIdStage
-            // specific api keys for version go here
-        }
-        production {
-            applicationId globalConf.androidApplicationIdProduction
-            // specific api keys for version go here
-        }
+  buildTypes {
+    debug {
+      applicationIdSuffix '.debug'
+      testCoverageEnabled true
+      debuggable true
+      minifyEnabled false
     }
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+    debuggable.initWith(buildTypes.debug)
+    debuggable {
+      testCoverageEnabled = false
+    }
+  }
 
-    buildTypes {
-        debug {
-            applicationIdSuffix '.debug'
-            testCoverageEnabled true
-            debuggable true
-            minifyEnabled false
-        }
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-        debuggable.initWith(buildTypes.debug)
-        debuggable {
-            testCoverageEnabled = false
-        }
+  sourceSets {
+    def commonTestDir = 'src/commonTest/java'
+    test {
+      java.srcDir commonTestDir
     }
+    androidTest {
+      java.srcDir commonTestDir
+    }
+    debuggable {
+      res.srcDirs = ['src/debug/res']
+      java.srcDirs = ['src/debug/java']
+    }
+  }
 
-    sourceSets {
-        def commonTestDir = 'src/commonTest/java'
-        test {
-            java.srcDir commonTestDir
-        }
-        androidTest {
-            java.srcDir commonTestDir
-        }
-        debuggable {
-            res.srcDirs = ['src/debug/res']
-            java.srcDirs = ['src/debug/java']
-        }
-    }
+  //Needed because of this https://github.com/square/okio/issues/58
+  lintOptions {
+    warning 'InvalidPackage'
+  }
 
-    //Needed because of this https://github.com/square/okio/issues/58
-    lintOptions {
-        warning 'InvalidPackage'
-    }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    packagingOptions {
-        exclude 'LICENSE.txt'
-        exclude 'META-INF/DEPENDENCIES'
-        exclude 'META-INF/ASL2.0'
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/NOTICE.txt'
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/services/javax.annotation.processing.Processor'
-    }
+  packagingOptions {
+    exclude 'LICENSE.txt'
+    exclude 'META-INF/DEPENDENCIES'
+    exclude 'META-INF/ASL2.0'
+    exclude 'META-INF/NOTICE'
+    exclude 'META-INF/NOTICE.txt'
+    exclude 'META-INF/LICENSE'
+    exclude 'META-INF/LICENSE.txt'
+    exclude 'META-INF/services/javax.annotation.processing.Processor'
+  }
 }
 
 dependencies {
-    Map<String, String> dependencies = globalConf.dependencies;
+  Map<String, String> dependencies = globalConf.dependencies;
 
-    // App Dependencies
-    compile dependencies.supportV4
-    compile dependencies.recyclerView
-    compile dependencies.cardView
-    compile dependencies.supportDesign
-    compile dependencies.supportAnnotations
+  // App Dependencies
+  compile dependencies.supportV4
+  compile dependencies.recyclerView
+  compile dependencies.cardView
+  compile dependencies.supportDesign
+  compile dependencies.supportAnnotations
 
-    compile dependencies.sqlBrite
-    compile dependencies.retrofit
-    compile dependencies.retrofitConverterGson
-    compile dependencies.retrofitAdapterRxJava
-    compile dependencies.okhttp
-    compile dependencies.okhttpLogging
+  compile dependencies.retrofit
+  compile dependencies.retrofitConverterGson
+  compile dependencies.retrofitAdapterRxJava
+  compile dependencies.okhttp
+  compile dependencies.okhttpLogging
+  compile dependencies.gson
 
-    compile dependencies.glide
-    compile dependencies.rxAndroid
-    compile dependencies.rxJava
-    compile dependencies.butterknife
-    compile dependencies.timber
+  compile dependencies.rxAndroid2
+  compile dependencies.rxJava2
 
-    compile dependencies.dagger
-    provided dependencies.javaXAnnotations //Required by Dagger2
+  compile dependencies.glide
+  compile dependencies.butterknife
+  compile dependencies.timber
 
-    // Instrumentation test dependencies
-    androidTestCompile dependencies.jUnit
-    androidTestCompile dependencies.mockito
-    androidTestCompile dependencies.supportAnnotations
-    androidTestCompile(dependencies.espressoContrib) {
-        exclude group: 'com.android.support', module: 'appcompat'
-        exclude group: 'com.android.support', module: 'design'
-        exclude group: 'com.android.support', module: 'support-v4'
-        exclude group: 'com.android.support', module: 'recyclerview-v7'
-    }
-    androidTestCompile dependencies.espressoCore
-    androidTestCompile dependencies.testRunner
-    androidTestCompile dependencies.testRunnerRules
-    androidTestCompile dependencies.dexMaker
-    androidTestCompile dependencies.dexMakerDx
-    androidTestCompile dependencies.dexMakerMockito
+  provided dependencies.autoValueAnnotations
+  provided dependencies.autoValueGson
 
-    // Unit tests dependencies
-    testCompile dependencies.jUnit
-    testCompile dependencies.mockito
-    testCompile dependencies.hamcrestCore
-    testCompile dependencies.hamcrestLib
-    testCompile dependencies.hamcrestIntegration
-    testCompile dependencies.roboElectric
+  compile dependencies.dagger
+  provided dependencies.javaXAnnotations //Required by Dagger2
 
-    // APT dependencies
-    apt dependencies.butterknifeCompiler
-    apt dependencies.daggerCompiler
-    testApt dependencies.daggerCompiler
-    androidTestApt dependencies.daggerCompiler
+  // Instrumentation test dependencies
+  androidTestCompile dependencies.jUnit
+  androidTestCompile dependencies.mockito
+  androidTestCompile dependencies.supportAnnotations
+  androidTestCompile(dependencies.espressoContrib) {
+    exclude group: 'com.android.support', module: 'appcompat'
+    exclude group: 'com.android.support', module: 'design'
+    exclude group: 'com.android.support', module: 'support-v4'
+    exclude group: 'com.android.support', module: 'recyclerview-v7'
+  }
+  androidTestCompile dependencies.espressoCore
+  androidTestCompile dependencies.testRunner
+  androidTestCompile dependencies.testRunnerRules
+  androidTestCompile dependencies.dexMaker
+  androidTestCompile dependencies.dexMakerDx
+  androidTestCompile dependencies.dexMakerMockito
+
+  // Unit tests dependencies
+  testCompile dependencies.jUnit
+  testCompile dependencies.mockito
+  testCompile dependencies.hamcrestCore
+  testCompile dependencies.hamcrestLib
+  testCompile dependencies.hamcrestIntegration
+  testCompile dependencies.roboElectric
+
+  // APT dependencies
+  apt dependencies.butterknifeCompiler
+  apt dependencies.daggerCompiler
+  apt dependencies.autoValue
+  apt dependencies.autoValueParcel
+  apt dependencies.autoValueGson
+  testApt dependencies.daggerCompiler
+  androidTestApt dependencies.daggerCompiler
 }
 
 class VersionCodeReader {
-    static def getVersionCode(defaultVersion) {
-        def code = System.env.BUILD_NUMBER != null ? Integer.parseInt(System.env.BUILD_NUMBER) : defaultVersion
-        println code == defaultVersion ? "BUILD_NUMBER not found. Falling back to default version code: $defaultVersion" : "VersionCode is set to $code"
-        return code
-    }
+  static def getVersionCode(defaultVersion) {
+    def code = System.env.BUILD_NUMBER != null ? Integer.parseInt(System.env.BUILD_NUMBER) :
+        defaultVersion
+    println code == defaultVersion ?
+        "BUILD_NUMBER not found. Falling back to default version code: $defaultVersion" :
+        "VersionCode is set to $code"
+    return code
+  }
 }
 
 // Log out test results to console
 tasks.matching { it instanceof Test }.all {
-    testLogging.events = ["failed", "passed", "skipped"]
+  testLogging.events = ["failed", "passed", "skipped"]
 }

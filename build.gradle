@@ -5,7 +5,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.0'
+        classpath 'com.android.tools.build:gradle:2.3.0'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     }
 }
@@ -20,9 +20,9 @@ ext {
     versionName = "1.0" // default version name
     versionCode = 1 // local build version code
     // android build settings
-    androidBuildToolsVersion = "23.0.3"
-    androidMinSdkVersion = 16
-    androidTargetSdkVersion = 24
+    androidBuildToolsVersion = "25.0.2"
+    androidMinSdkVersion = 21
+    androidTargetSdkVersion = 25
     // packages for our project
     androidApplicationIdStage = "com.name.mvpboilerplate.stage"
     androidApplicationIdProduction = "com.name.mvpboilerplate"
