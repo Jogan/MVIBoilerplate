@@ -3,12 +3,9 @@ package com.name.mvpboilerplate.data;
 import com.name.mvpboilerplate.data.model.NamedResource;
 import com.name.mvpboilerplate.data.model.Pokemon;
 import com.name.mvpboilerplate.data.remote.MvpBoilerplateService;
-import com.name.mvpboilerplate.data.remote.MvpBoilerplateService.PokemonListResponse;
-
 import io.reactivex.Single;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 

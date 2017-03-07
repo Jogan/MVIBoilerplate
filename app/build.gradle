@@ -104,6 +104,7 @@ android {
     exclude 'META-INF/LICENSE'
     exclude 'META-INF/LICENSE.txt'
     exclude 'META-INF/services/javax.annotation.processing.Processor'
+    exclude 'META-INF/rxjava.properties'
   }
 }
 
@@ -119,7 +120,7 @@ dependencies {
 
   compile dependencies.retrofit
   compile dependencies.retrofitConverterGson
-  compile dependencies.retrofitAdapterRxJava
+  compile dependencies.retrofitAdapterRxJava2
   compile dependencies.okhttp
   compile dependencies.okhttpLogging
   compile dependencies.gson
@@ -162,7 +163,7 @@ dependencies {
   testCompile dependencies.hamcrestIntegration
   testCompile dependencies.roboElectric
 
-  // APT dependencies
+  // APT depeddndencies
   apt dependencies.butterknifeCompiler
   apt dependencies.daggerCompiler
   apt dependencies.autoValue

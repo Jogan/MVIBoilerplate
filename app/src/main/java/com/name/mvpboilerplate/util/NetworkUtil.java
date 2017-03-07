@@ -3,8 +3,7 @@ package com.name.mvpboilerplate.util;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-
-import retrofit2.adapter.rxjava.HttpException;
+import retrofit2.HttpException;
 
 public class NetworkUtil {
 

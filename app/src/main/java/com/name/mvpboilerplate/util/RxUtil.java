@@ -1,7 +1,6 @@
 package com.name.mvpboilerplate.util;
 
-
-import rx.Subscription;
+import io.reactivex.disposables.Disposable;
 
 public final class RxUtil {
 
@@ -12,24 +11,24 @@ public final class RxUtil {
     /**
      * Returns a boolean indicating whether a subscription is already being made
      */
-    public static boolean inFlight(final Subscription subscription) {
-        return subscription != null && !subscription.isUnsubscribed();
+    public static boolean inFlight(final Disposable subscription) {
+        return subscription != null && !subscription.isDisposed();
     }
 
     /**
      * UnSubscribe if the subscription is in flight
      */
-    public static void unSubscribeIfNeeded(final Subscription subscription) {
+    public static void unSubscribeIfNeeded(final Disposable subscription) {
         if (inFlight(subscription)) {
-            subscription.unsubscribe();
+            subscription.dispose();
         }
     }
 
     /**
      * UnSubscribe if the subscriptions are in flight
      */
-    public static void unSubscribeIfNeeded(final Subscription... subscriptions) {
-        for (final Subscription subscription : subscriptions) {
+    public static void unSubscribeIfNeeded(final Disposable... subscriptions) {
+        for (final Disposable subscription : subscriptions) {
             unSubscribeIfNeeded(subscription);
         }
     }

@@ -1,7 +1,7 @@
 package com.name.mvpboilerplate.ui.base;
 
-import rx.Observable;
-import rx.Single;
+import io.reactivex.Observable;
+import io.reactivex.Single;
 
 /**
  * Base class that implements the Presenter interface and provides a base implementation for
