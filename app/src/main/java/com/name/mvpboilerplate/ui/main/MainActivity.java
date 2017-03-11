@@ -7,111 +7,100 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ProgressBar;
-
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import com.name.mvpboilerplate.R;
 import com.name.mvpboilerplate.ui.base.BaseActivity;
 import com.name.mvpboilerplate.ui.common.ErrorView;
 import com.name.mvpboilerplate.ui.detail.DetailActivity;
-
+import io.reactivex.Observable;
 import java.util.List;
-
 import javax.inject.Inject;
+import timber.log.Timber;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+public class MainActivity extends BaseActivity implements MainView, PokemonAdapter.ClickListener,
+    ErrorView.ErrorListener {
 
-public class MainActivity extends BaseActivity implements MainMvpView, PokemonAdapter.ClickListener,
-        ErrorView.ErrorListener {
+  @Inject PokemonAdapter pokemonAdapter;
+  @Inject MainPresenter mainPresenter;
 
-    private static final int POKEMON_COUNT = 20;
+  @BindView(R.id.view_error) ErrorView errorView;
+  @BindView(R.id.progress) ProgressBar progress;
+  @BindView(R.id.recycler_pokemon) RecyclerView pokemonRecycler;
+  @BindView(R.id.swipe_to_refresh) SwipeRefreshLayout swipeRefreshLayout;
+  @BindView(R.id.toolbar) Toolbar toolbar;
 
-    @Inject PokemonAdapter pokemonAdapter;
-    @Inject MainPresenter mainPresenter;
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    activityComponent().inject(this);
+    setContentView(R.layout.activity_main);
+    ButterKnife.bind(this);
+    mainPresenter.attachView(this);
 
-    @BindView(R.id.view_error) ErrorView errorView;
-    @BindView(R.id.progress) ProgressBar progress;
-    @BindView(R.id.recycler_pokemon) RecyclerView pokemonRecycler;
-    @BindView(R.id.swipe_to_refresh) SwipeRefreshLayout swipeRefreshLayout;
-    @BindView(R.id.toolbar) Toolbar toolbar;
+    setSupportActionBar(toolbar);
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        activityComponent().inject(this);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
-        mainPresenter.attachView(this);
+    swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.primary);
+    swipeRefreshLayout.setColorSchemeResources(R.color.white);
+    //swipeRefreshLayout.setOnRefreshListener(() -> mainPresenter.getPokemon(POKEMON_COUNT));
 
-        setSupportActionBar(toolbar);
+    pokemonAdapter.setClickListener(this);
+    pokemonRecycler.setLayoutManager(new LinearLayoutManager(this));
+    pokemonRecycler.setAdapter(pokemonAdapter);
 
-        swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.primary);
-        swipeRefreshLayout.setColorSchemeResources(R.color.white);
-        swipeRefreshLayout.setOnRefreshListener(
-                new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        mainPresenter.getPokemon(POKEMON_COUNT);
-                    }
-                });
+    errorView.setErrorListener(this);
+  }
 
-        pokemonAdapter.setClickListener(this);
-        pokemonRecycler.setLayoutManager(new LinearLayoutManager(this));
-        pokemonRecycler.setAdapter(pokemonAdapter);
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    mainPresenter.detachView(false);
+  }
 
-        errorView.setErrorListener(this);
+  @Override public Observable<Boolean> loadFirstPageIntent() {
+    return Observable.just(true).doOnComplete(() -> Timber.d("firstPage completed"));
+  }
 
-        mainPresenter.getPokemon(POKEMON_COUNT);
-    }
+  @Override public void render(MainViewState viewState) {
+    if (viewState.loading()) {
+      if (pokemonRecycler.getVisibility() == View.VISIBLE
+          && pokemonAdapter.getItemCount() > 0) {
+        swipeRefreshLayout.setRefreshing(true);
+      } else {
+        progress.setVisibility(View.VISIBLE);
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mainPresenter.detachView();
-    }
-
-    @Override
-    public void showPokemon(List<String> pokemon) {
-        pokemonAdapter.setPokemon(pokemon);
-        pokemonAdapter.notifyDataSetChanged();
-
-        pokemonRecycler.setVisibility(View.VISIBLE);
-        swipeRefreshLayout.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void showProgress(boolean show) {
-        if (show) {
-            if (pokemonRecycler.getVisibility() == View.VISIBLE
-                    && pokemonAdapter.getItemCount() > 0) {
-                swipeRefreshLayout.setRefreshing(true);
-            } else {
-                progress.setVisibility(View.VISIBLE);
-
-                pokemonRecycler.setVisibility(View.GONE);
-                swipeRefreshLayout.setVisibility(View.GONE);
-            }
-
-            errorView.setVisibility(View.GONE);
-        } else {
-            swipeRefreshLayout.setRefreshing(false);
-            progress.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    public void showError() {
         pokemonRecycler.setVisibility(View.GONE);
         swipeRefreshLayout.setVisibility(View.GONE);
-        errorView.setVisibility(View.VISIBLE);
+      }
+
+      errorView.setVisibility(View.GONE);
+    } else {
+      swipeRefreshLayout.setRefreshing(false);
+      progress.setVisibility(View.GONE);
     }
 
-    @Override
-    public void onPokemonClick(String pokemon) {
-        startActivity(DetailActivity.getStartIntent(this, pokemon));
+    if(!viewState.pokemon().isEmpty()) {
+      pokemonAdapter.setPokemon(viewState.pokemon());
+      pokemonAdapter.notifyDataSetChanged();
+
+      pokemonRecycler.setVisibility(View.VISIBLE);
+      swipeRefreshLayout.setVisibility(View.VISIBLE);
     }
 
-    @Override
-    public void onReloadData() {
-        mainPresenter.getPokemon(POKEMON_COUNT);
+    if(viewState.error()) {
+      pokemonRecycler.setVisibility(View.GONE);
+      swipeRefreshLayout.setVisibility(View.GONE);
+      errorView.setVisibility(View.VISIBLE);
     }
+  }
+
+  @Override
+  public void onPokemonClick(String pokemon) {
+    startActivity(DetailActivity.getStartIntent(this, pokemon));
+  }
+
+  @Override
+  public void onReloadData() {
+    // TODO mainPresenter.getPokemon(POKEMON_COUNT);
+  }
 }

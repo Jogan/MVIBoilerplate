@@ -2,18 +2,12 @@ package com.name.mvpboilerplate.ui.detail;
 
 import com.name.mvpboilerplate.dagger.ConfigPersistent;
 import com.name.mvpboilerplate.data.DataManager;
-import com.name.mvpboilerplate.data.model.Pokemon;
-import com.name.mvpboilerplate.data.model.Statistic;
-import com.name.mvpboilerplate.ui.base.BasePresenter;
-import io.reactivex.android.schedulers.AndroidSchedulers;
+import com.name.mvpboilerplate.ui.base.mvi.MviBasePresenter;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.observers.DisposableSingleObserver;
-import io.reactivex.schedulers.Schedulers;
 import javax.inject.Inject;
-import timber.log.Timber;
 
 @ConfigPersistent
-public class DetailPresenter extends BasePresenter<DetailMvpView> {
+public class DetailPresenter extends MviBasePresenter<DetailMvpView, DetailViewState> {
 
   private final DataManager dataManager;
   private CompositeDisposable subscriptions;
@@ -30,13 +24,17 @@ public class DetailPresenter extends BasePresenter<DetailMvpView> {
   }
 
   @Override
-  public void detachView() {
-    super.detachView();
+  public void detachView(boolean retain) {
+    super.detachView(retain);
     subscriptions.dispose();
     subscriptions = null;
   }
 
-  public void getPokemon(String name) {
+  @Override protected void bindIntents() {
+
+  }
+
+ /* public void getPokemon(String name) {
     checkViewAttached();
     getMvpView().showProgress(true);
     subscriptions.add(dataManager
@@ -61,5 +59,5 @@ public class DetailPresenter extends BasePresenter<DetailMvpView> {
                 .e(error, "There was a problem retrieving the pokemon...");
           }
         }));
-  }
+  }*/
 }

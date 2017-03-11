@@ -3,6 +3,8 @@ package com.name.mvpboilerplate.data;
 import com.name.mvpboilerplate.data.model.NamedResource;
 import com.name.mvpboilerplate.data.model.Pokemon;
 import com.name.mvpboilerplate.data.remote.MvpBoilerplateService;
+import com.name.mvpboilerplate.ui.main.MainViewState;
+import io.reactivex.Observable;
 import io.reactivex.Single;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,26 +14,29 @@ import javax.inject.Singleton;
 @Singleton
 public class DataManager {
 
-    private final MvpBoilerplateService mvpBoilerplateService;
+  private final MvpBoilerplateService mvpBoilerplateService;
 
-    @Inject
-    public DataManager(MvpBoilerplateService mvpBoilerplateService) {
-        this.mvpBoilerplateService = mvpBoilerplateService;
-    }
+  @Inject
+  public DataManager(MvpBoilerplateService mvpBoilerplateService) {
+    this.mvpBoilerplateService = mvpBoilerplateService;
+  }
 
-    public Single<List<String>> getPokemonList(int limit) {
-        return mvpBoilerplateService.getPokemonList(limit)
-                .flatMap(pokemonListResponse -> {
-                    List<String> pokemonNames = new ArrayList<>();
-                    for (NamedResource pokemon : pokemonListResponse.results) {
-                        pokemonNames.add(pokemon.name);
-                    }
-                    return Single.just(pokemonNames);
-                });
-    }
+  public Observable<MainViewState> getPokemonList(int limit) {
+    return mvpBoilerplateService
+        .getPokemonList(limit)
+        .flatMap(pokemonListResponse -> {
+          List<String> pokemonNames = new ArrayList<>();
+          for (NamedResource pokemon : pokemonListResponse.results) {
+            pokemonNames.add(pokemon.name);
+          }
+          return Observable.just(pokemonNames);
+        })
+        .map(list -> MainViewState.builder().pokemon(list).build())
+        .startWith(MainViewState.builder().loading(true).build())
+        .onErrorReturn(t -> MainViewState.builder().error(true).build());
+  }
 
-    public Single<Pokemon> getPokemon(String name) {
-        return mvpBoilerplateService.getPokemon(name);
-    }
-
+  public Observable<Pokemon> getPokemon(String name) {
+    return mvpBoilerplateService.getPokemon(name);
+  }
 }

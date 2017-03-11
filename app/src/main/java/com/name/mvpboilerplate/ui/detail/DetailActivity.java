@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+// TODO
 public class DetailActivity extends BaseActivity implements DetailMvpView, ErrorView.ErrorListener {
 
     public static final String EXTRA_POKEMON_NAME = "EXTRA_POKEMON_NAME";
@@ -64,13 +65,13 @@ public class DetailActivity extends BaseActivity implements DetailMvpView, Error
 
         errorView.setErrorListener(this);
 
-        detailPresenter.getPokemon(pokemonName);
+        //detailPresenter.getPokemon(pokemonName);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        detailPresenter.detachView();
+        //detailPresenter.detachView();
     }
 
     @Override
@@ -104,6 +105,6 @@ public class DetailActivity extends BaseActivity implements DetailMvpView, Error
 
     @Override
     public void onReloadData() {
-        detailPresenter.getPokemon(pokemonName);
+        //detailPresenter.getPokemon(pokemonName);
     }
 }
