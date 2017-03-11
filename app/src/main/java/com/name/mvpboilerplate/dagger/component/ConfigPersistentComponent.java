@@ -2,15 +2,13 @@ package com.name.mvpboilerplate.dagger.component;
 
 import com.name.mvpboilerplate.dagger.ConfigPersistent;
 import com.name.mvpboilerplate.dagger.module.ActivityModule;
-import com.name.mvpboilerplate.dagger.module.FragmentModule;
 import com.name.mvpboilerplate.ui.base.BaseActivity;
-import com.name.mvpboilerplate.ui.base.BaseFragment;
 
 import dagger.Component;
 
 /**
  * A dagger component that will live during the lifecycle of an Activity or Fragment but it won't
- * be destroy during configuration changes. Check {@link BaseActivity} and {@link BaseFragment} to
+ * be destroy during configuration changes. Check {@link BaseActivity} to
  * see how this components survives configuration changes.
  * Use the {@link ConfigPersistent} scope to annotate dependencies that need to survive
  * configuration changes (for example Presenters).
@@ -20,7 +18,4 @@ import dagger.Component;
 public interface ConfigPersistentComponent {
 
     ActivityComponent activityComponent(ActivityModule activityModule);
-
-    FragmentComponent fragmentComponent(FragmentModule fragmentModule);
-
 }

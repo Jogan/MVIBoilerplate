@@ -128,6 +128,10 @@ dependencies {
   compile dependencies.rxAndroid2
   compile dependencies.rxJava2
 
+  // TODO store impl
+
+  // TODO conductor impl
+
   compile dependencies.glide
   compile dependencies.butterknife
   compile dependencies.timber
