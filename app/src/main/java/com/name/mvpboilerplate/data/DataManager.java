@@ -21,7 +21,7 @@ public class DataManager {
     this.mvpBoilerplateService = mvpBoilerplateService;
   }
 
-  public Observable<MainViewState> getPokemonList(int limit) {
+  public Observable<List<String>> getPokemonList(int limit) {
     return mvpBoilerplateService
         .getPokemonList(limit)
         .flatMap(pokemonListResponse -> {
@@ -30,10 +30,7 @@ public class DataManager {
             pokemonNames.add(pokemon.name);
           }
           return Observable.just(pokemonNames);
-        })
-        .map(list -> MainViewState.builder().pokemon(list).build())
-        .startWith(MainViewState.builder().loading(true).build())
-        .onErrorReturn(t -> MainViewState.builder().error(true).build());
+        });
   }
 
   public Observable<Pokemon> getPokemon(String name) {

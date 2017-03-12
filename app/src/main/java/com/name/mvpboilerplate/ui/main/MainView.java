@@ -13,6 +13,13 @@ public interface MainView extends MviView {
   Observable<Boolean> loadFirstPageIntent();
 
   /**
+   * The intent to react on pull-to-refresh
+   *
+   * @return The emitted item boolean can be ignored because it is always true
+   */
+  Observable<Boolean> pullToRefreshIntent();
+
+  /**
    * Renders the viewState
    */
   void render(MainViewState viewState);

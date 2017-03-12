@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import com.name.mvpboilerplate.dagger.ConfigPersistent;
 import com.name.mvpboilerplate.data.DataManager;
 import com.name.mvpboilerplate.ui.base.mvi.MviBasePresenter;
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -29,13 +30,47 @@ public class MainPresenter extends MviBasePresenter<MainView, MainViewState> {
   }
 
   @Override protected void bindIntents() {
+
+    Observable<MainViewPartialStateChanges> loadFirstPage = getView()
+        .loadFirstPageIntent()
+        .doOnNext(ignored -> Timber.d("intent: load initial data"))
+        .switchMap(ignored -> dataManager
+            .getPokemonList(POKEMON_COUNT)
+            .map(list -> (MainViewPartialStateChanges) new MainViewPartialStateChanges.FirstPageLoaded(list))
+            .startWith(new MainViewPartialStateChanges.FirstPageLoading())
+            .onErrorReturn(MainViewPartialStateChanges.FirstPageError::new)
+            .subscribeOn(Schedulers.io()));
+
+    Observable<MainViewPartialStateChanges> pullToRefresh = getView()
+        .pullToRefreshIntent()
+        .doOnNext(ignored -> Timber.d("intent: pull to refresh"))
+        .switchMap(ignored -> dataManager
+            .getPokemonList(POKEMON_COUNT)
+            .map(list -> (MainViewPartialStateChanges) new MainViewPartialStateChanges.PullToRefreshLoaded(list))
+            .startWith(new MainViewPartialStateChanges.PullToRefreshLoading())
+            .onErrorReturn(MainViewPartialStateChanges.PullToRefeshLoadingError::new)
+            .subscribeOn(Schedulers.io()));
+
+    Observable<MainViewPartialStateChanges> allIntentsObservable = Observable
+        .merge(loadFirstPage, pullToRefresh)
+        .observeOn(AndroidSchedulers.mainThread());
+
+    MainViewState initialState = MainViewState
+        .builder()
+        .loadingFirstPage(true)
+        .build();
+
     subscriptions.add(
-        getView().loadFirstPageIntent()
-                 .switchMap(ignored -> dataManager.getPokemonList(POKEMON_COUNT))
-                 .observeOn(AndroidSchedulers.mainThread())
-                 .subscribeOn(Schedulers.io())
-                 .doOnNext(viewState -> Timber.d("## MainViewState -> %s", viewState.toString()))
-                 .subscribe(viewState -> getView().render(viewState)));
+        allIntentsObservable
+            .scan(initialState, this::viewStateReducer)
+            .distinctUntilChanged()
+            .doOnNext(viewState -> Timber.d("## MainViewState -> %s", viewState.toString()))
+            .subscribe(mainViewState -> getView().render(mainViewState))
+    );
+  }
+
+  private MainViewState viewStateReducer(MainViewState previousState, MainViewPartialStateChanges partialChanges) {
+    return partialChanges.computeNewState(previousState);
   }
 
   @Override

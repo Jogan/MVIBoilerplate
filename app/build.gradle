@@ -127,6 +127,10 @@ dependencies {
 
   compile dependencies.rxAndroid2
   compile dependencies.rxJava2
+  compile dependencies.rxBinding
+  compile dependencies.rxBindingSupport
+  compile dependencies.rxBindingAppCompat
+  compile dependencies.rxBindingDesign
 
   // TODO store impl
 

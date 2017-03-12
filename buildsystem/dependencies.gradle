@@ -6,6 +6,7 @@ ext {
   daggerVersion = '2.10-rc2'
   rxJava2Version = '2.0.6'
   rxAndroid2Version = '2.0.1'
+  rxBindingVersion = '2.0.0'
   retrofitVersion = '2.2.0'
   okHttpVersion = '3.6.0'
   glideVersion = '3.7.0'
@@ -42,6 +43,10 @@ ext {
 
       rxJava2                : "io.reactivex.rxjava2:rxjava:$rxJava2Version",
       rxAndroid2             : "io.reactivex.rxjava2:rxandroid:$rxAndroid2Version",
+      rxBinding              : "com.jakewharton.rxbinding2:rxbinding:$rxBindingVersion",
+      rxBindingSupport       : "com.jakewharton.rxbinding2:rxbinding-support-v4:$rxBindingVersion",
+      rxBindingAppCompat     : "com.jakewharton.rxbinding2:rxbinding-appcompat-v7:$rxBindingVersion",
+      rxBindingDesign        : "com.jakewharton.rxbinding2:rxbinding-design:$rxBindingVersion",
 
       retrofit               : "com.squareup.retrofit2:retrofit:$retrofitVersion",
       retrofitConverterGson  : "com.squareup.retrofit2:converter-gson:$retrofitVersion",

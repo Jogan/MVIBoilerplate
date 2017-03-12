@@ -1,20 +1,22 @@
 package com.name.mvpboilerplate.ui.main;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.jakewharton.rxbinding2.support.v4.widget.RxSwipeRefreshLayout;
 import com.name.mvpboilerplate.R;
 import com.name.mvpboilerplate.ui.base.BaseActivity;
 import com.name.mvpboilerplate.ui.common.ErrorView;
 import com.name.mvpboilerplate.ui.detail.DetailActivity;
 import io.reactivex.Observable;
-import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -36,13 +38,13 @@ public class MainActivity extends BaseActivity implements MainView, PokemonAdapt
     activityComponent().inject(this);
     setContentView(R.layout.activity_main);
     ButterKnife.bind(this);
+
     mainPresenter.attachView(this);
 
     setSupportActionBar(toolbar);
 
     swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.primary);
     swipeRefreshLayout.setColorSchemeResources(R.color.white);
-    //swipeRefreshLayout.setOnRefreshListener(() -> mainPresenter.getPokemon(POKEMON_COUNT));
 
     pokemonAdapter.setClickListener(this);
     pokemonRecycler.setLayoutManager(new LinearLayoutManager(this));
@@ -61,37 +63,59 @@ public class MainActivity extends BaseActivity implements MainView, PokemonAdapt
     return Observable.just(true).doOnComplete(() -> Timber.d("firstPage completed"));
   }
 
+  @Override public Observable<Boolean> pullToRefreshIntent() {
+    return RxSwipeRefreshLayout.refreshes(swipeRefreshLayout).map(ignored -> true);
+  }
+
   @Override public void render(MainViewState viewState) {
-    if (viewState.loading()) {
-      if (pokemonRecycler.getVisibility() == View.VISIBLE
-          && pokemonAdapter.getItemCount() > 0) {
-        swipeRefreshLayout.setRefreshing(true);
-      } else {
-        progress.setVisibility(View.VISIBLE);
-
-        pokemonRecycler.setVisibility(View.GONE);
-        swipeRefreshLayout.setVisibility(View.GONE);
-      }
-
-      errorView.setVisibility(View.GONE);
+    Timber.d("render %s", viewState);
+    if (!viewState.loadingFirstPage() && viewState.firstPageError() == null) {
+      renderShowData(viewState);
+    } else if (viewState.loadingFirstPage()) {
+      renderFirstPageLoading();
+    } else if (viewState.firstPageError() != null) {
+      renderFirstPageError();
     } else {
-      swipeRefreshLayout.setRefreshing(false);
-      progress.setVisibility(View.GONE);
+      throw new IllegalStateException("Unknown view state " + viewState);
+    }
+  }
+
+  private void renderShowData(MainViewState viewState) {
+    progress.setVisibility(View.GONE);
+    errorView.setVisibility(View.GONE);
+    pokemonRecycler.setVisibility(View.VISIBLE);
+    swipeRefreshLayout.setVisibility(View.VISIBLE);
+
+    pokemonAdapter.setPokemon(viewState.data());
+    pokemonAdapter.notifyDataSetChanged();
+
+    boolean pullToRefreshFinished = swipeRefreshLayout.isRefreshing()
+        && !viewState.loadingPullToRefresh()
+        && viewState.pullToRefreshError() == null;
+    if (pullToRefreshFinished) {
+      // Swipe to refresh finished successfully so scroll to the top of the list (to see inserted items)
+      pokemonRecycler.smoothScrollToPosition(0);
     }
 
-    if(!viewState.pokemon().isEmpty()) {
-      pokemonAdapter.setPokemon(viewState.pokemon());
-      pokemonAdapter.notifyDataSetChanged();
+    swipeRefreshLayout.setRefreshing(viewState.loadingPullToRefresh());
 
-      pokemonRecycler.setVisibility(View.VISIBLE);
-      swipeRefreshLayout.setVisibility(View.VISIBLE);
+    if (viewState.pullToRefreshError() != null) {
+      Toast.makeText(this, R.string.error_message, Toast.LENGTH_LONG).show();
     }
+  }
 
-    if(viewState.error()) {
-      pokemonRecycler.setVisibility(View.GONE);
-      swipeRefreshLayout.setVisibility(View.GONE);
-      errorView.setVisibility(View.VISIBLE);
-    }
+  private void renderFirstPageError() {
+    pokemonRecycler.setVisibility(View.GONE);
+    swipeRefreshLayout.setVisibility(View.GONE);
+    progress.setVisibility(View.GONE);
+    errorView.setVisibility(View.VISIBLE);
+  }
+
+  private void renderFirstPageLoading() {
+    pokemonRecycler.setVisibility(View.GONE);
+    swipeRefreshLayout.setVisibility(View.GONE);
+    errorView.setVisibility(View.GONE);
+    progress.setVisibility(View.VISIBLE);
   }
 
   @Override
@@ -99,6 +123,7 @@ public class MainActivity extends BaseActivity implements MainView, PokemonAdapt
     startActivity(DetailActivity.getStartIntent(this, pokemon));
   }
 
+  // TODO replace with intent
   @Override
   public void onReloadData() {
     // TODO mainPresenter.getPokemon(POKEMON_COUNT);
