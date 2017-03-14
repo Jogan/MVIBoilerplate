@@ -43,6 +43,7 @@ public class MvpBoilerplateServiceFactory {
         return new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                .registerTypeAdapterFactory(AutoValueGsonTypeAdapter.create())
                 .create();
     }
 

@@ -27,7 +27,7 @@ public class DataManager {
         .flatMap(pokemonListResponse -> {
           List<String> pokemonNames = new ArrayList<>();
           for (NamedResource pokemon : pokemonListResponse.results) {
-            pokemonNames.add(pokemon.name);
+            pokemonNames.add(pokemon.name());
           }
           return Observable.just(pokemonNames);
         });

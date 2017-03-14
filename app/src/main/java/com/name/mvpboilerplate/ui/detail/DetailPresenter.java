@@ -1,13 +1,18 @@
 package com.name.mvpboilerplate.ui.detail;
 
+import android.support.annotation.NonNull;
 import com.name.mvpboilerplate.dagger.ConfigPersistent;
 import com.name.mvpboilerplate.data.DataManager;
 import com.name.mvpboilerplate.ui.base.mvi.MviBasePresenter;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 @ConfigPersistent
-public class DetailPresenter extends MviBasePresenter<DetailMvpView, DetailViewState> {
+public class DetailPresenter extends MviBasePresenter<DetailView, DetailViewState> {
 
   private final DataManager dataManager;
   private CompositeDisposable subscriptions;
@@ -18,9 +23,9 @@ public class DetailPresenter extends MviBasePresenter<DetailMvpView, DetailViewS
   }
 
   @Override
-  public void attachView(DetailMvpView mvpView) {
-    super.attachView(mvpView);
+  public void attachView(@NonNull DetailView mvpView) {
     subscriptions = new CompositeDisposable();
+    super.attachView(mvpView);
   }
 
   @Override
@@ -32,32 +37,16 @@ public class DetailPresenter extends MviBasePresenter<DetailMvpView, DetailViewS
 
   @Override protected void bindIntents() {
 
-  }
-
- /* public void getPokemon(String name) {
-    checkViewAttached();
-    getMvpView().showProgress(true);
-    subscriptions.add(dataManager
-        .getPokemon(name)
+    Observable<DetailViewState> loadData = getView()
+        .loadDataIntent()
+        .doOnNext(name -> Timber.d("intent: load data for %s", name))
+        .switchMap(dataManager::getPokemon)
+        .map(pokemon -> DetailViewState.builder().data(pokemon).build())
+        .startWith(DetailViewState.builder().loading(true).build())
+        .onErrorReturn(t -> DetailViewState.builder().error(t).build())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribeOn(Schedulers.io())
-        .subscribeWith(new DisposableSingleObserver<Pokemon>() {
-          @Override
-          public void onSuccess(Pokemon pokemon) {
-            getMvpView().showProgress(false);
-            getMvpView().showPokemon(pokemon);
-            for (Statistic statistic : pokemon.stats) {
-              getMvpView().showStat(statistic);
-            }
-          }
+        .subscribeOn(Schedulers.io());
 
-          @Override
-          public void onError(Throwable error) {
-            getMvpView().showProgress(false);
-            getMvpView().showError();
-            Timber
-                .e(error, "There was a problem retrieving the pokemon...");
-          }
-        }));
-  }*/
+    subscriptions.add(loadData.subscribe(pokemon -> getView().render(pokemon)));
+  }
 }
