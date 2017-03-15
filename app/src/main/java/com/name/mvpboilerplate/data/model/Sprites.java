@@ -14,4 +14,14 @@ public abstract class Sprites implements Parcelable {
     public static TypeAdapter<Sprites> typeAdapter(Gson gson) {
         return new AutoValue_Sprites.GsonTypeAdapter(gson);
     }
+
+    public static Builder builder() {
+        return new AutoValue_Sprites.Builder();
+    }
+
+    @AutoValue.Builder public abstract static class Builder {
+        public abstract Builder frontDefault(String frontDefault);
+
+        public abstract Sprites build();
+    }
 }

@@ -11,6 +11,8 @@ import dagger.Provides;
 @Module
 public class ActivityModule {
 
+    private Activity activity;
+
     public ActivityModule(Activity activity) {
         this.activity = activity;
     }
@@ -19,8 +21,6 @@ public class ActivityModule {
     Activity provideActivity() {
         return activity;
     }
-
-    private Activity activity;
 
     @Provides
     @ActivityContext

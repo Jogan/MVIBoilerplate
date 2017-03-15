@@ -2,9 +2,16 @@ package com.name.mvpboilerplate.ui.base.mvi;
 
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
+import com.name.mvpboilerplate.ui.base.BaseSchedulerProvider;
 
 public abstract class MviBasePresenter<V extends MviView, VS extends MviViewState>
     extends MviNullObjectBasePresenter<V, VS> {
+
+  protected BaseSchedulerProvider provider;
+
+  public MviBasePresenter(BaseSchedulerProvider provider) {
+    this.provider = provider;
+  }
 
   @Override public void attachView(@NonNull V view) {
     super.attachView(view);

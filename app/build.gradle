@@ -170,6 +170,9 @@ dependencies {
   testCompile dependencies.hamcrestLib
   testCompile dependencies.hamcrestIntegration
   testCompile dependencies.roboElectric
+  testCompile dependencies.mockWebServer
+
+  testCompile project(':mocks')
 
   // APT depeddndencies
   apt dependencies.butterknifeCompiler

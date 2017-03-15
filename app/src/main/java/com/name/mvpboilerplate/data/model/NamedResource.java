@@ -13,4 +13,16 @@ public abstract class NamedResource implements Parcelable {
     public static TypeAdapter<NamedResource> typeAdapter(Gson gson) {
         return new AutoValue_NamedResource.GsonTypeAdapter(gson);
     }
+
+    public static Builder builder() {
+        return new AutoValue_NamedResource.Builder();
+    }
+
+    @AutoValue.Builder public abstract static class Builder {
+        public abstract Builder name(String name);
+
+        public abstract Builder url(String url);
+
+        public abstract NamedResource build();
+    }
 }

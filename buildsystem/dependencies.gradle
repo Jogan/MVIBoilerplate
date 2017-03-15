@@ -3,7 +3,7 @@ ext {
   supportLibraryVersion = '25.2.0'
   multidexVersion = '1.0.1'
   // core
-  daggerVersion = '2.10-rc2'
+  daggerVersion = '2.10-rc4'
   rxJava2Version = '2.0.6'
   rxAndroid2Version = '2.0.1'
   rxBindingVersion = '2.0.0'
@@ -89,6 +89,7 @@ ext {
       hamcrestIntegration    : "org.hamcrest:hamcrest-integration:$hamcrestVersion",
       roboElectric           : "org.robolectric:robolectric:$roboelectricVersion",
       mockito                : "org.mockito:mockito-core:$mockitoVersion",
+      mockWebServer          : "com.squareup.okhttp3:mockwebserver:$okHttpVersion",
       multidexInstrumentation: "com.android.support:multidex-instrumentation:$multidexVersion"
 
   ]

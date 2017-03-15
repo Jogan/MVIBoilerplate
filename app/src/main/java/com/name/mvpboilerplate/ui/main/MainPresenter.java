@@ -3,6 +3,7 @@ package com.name.mvpboilerplate.ui.main;
 import android.support.annotation.NonNull;
 import com.name.mvpboilerplate.dagger.ConfigPersistent;
 import com.name.mvpboilerplate.data.DataManager;
+import com.name.mvpboilerplate.ui.base.BaseSchedulerProvider;
 import com.name.mvpboilerplate.ui.base.mvi.MviBasePresenter;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -19,7 +20,8 @@ public class MainPresenter extends MviBasePresenter<MainView, MainViewState> {
   private CompositeDisposable subscriptions;
 
   @Inject
-  public MainPresenter(DataManager dataManager) {
+  public MainPresenter(BaseSchedulerProvider schedulerProvider, DataManager dataManager) {
+    super(schedulerProvider);
     this.dataManager = dataManager;
   }
 
@@ -39,7 +41,7 @@ public class MainPresenter extends MviBasePresenter<MainView, MainViewState> {
             .map(list -> (MainViewPartialStateChanges) new MainViewPartialStateChanges.FirstPageLoaded(list))
             .startWith(new MainViewPartialStateChanges.FirstPageLoading())
             .onErrorReturn(MainViewPartialStateChanges.FirstPageError::new)
-            .subscribeOn(Schedulers.io()));
+            .subscribeOn(provider.io()));
 
     Observable<MainViewPartialStateChanges> pullToRefresh = getView()
         .pullToRefreshIntent()
@@ -49,11 +51,11 @@ public class MainPresenter extends MviBasePresenter<MainView, MainViewState> {
             .map(list -> (MainViewPartialStateChanges) new MainViewPartialStateChanges.PullToRefreshLoaded(list))
             .startWith(new MainViewPartialStateChanges.PullToRefreshLoading())
             .onErrorReturn(MainViewPartialStateChanges.PullToRefeshLoadingError::new)
-            .subscribeOn(Schedulers.io()));
+            .subscribeOn(provider.io()));
 
     Observable<MainViewPartialStateChanges> allIntentsObservable = Observable
         .merge(loadFirstPage, pullToRefresh)
-        .observeOn(AndroidSchedulers.mainThread());
+        .observeOn(provider.ui());
 
     MainViewState initialState = MainViewState
         .builder()

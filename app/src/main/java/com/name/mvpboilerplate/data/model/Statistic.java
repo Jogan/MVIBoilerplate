@@ -15,4 +15,16 @@ public abstract class Statistic implements Parcelable {
     public static TypeAdapter<Statistic> typeAdapter(Gson gson) {
         return new AutoValue_Statistic.GsonTypeAdapter(gson);
     }
+
+    public static Builder builder() {
+        return new AutoValue_Statistic.Builder();
+    }
+
+    @AutoValue.Builder public abstract static class Builder {
+        public abstract Builder stat(NamedResource stat);
+
+        public abstract Builder baseStat(int baseStat);
+
+        public abstract Statistic build();
+    }
 }

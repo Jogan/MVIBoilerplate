@@ -11,7 +11,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-@Singleton
 public class DataManager {
 
   private final MvpBoilerplateService mvpBoilerplateService;
@@ -21,6 +20,7 @@ public class DataManager {
     this.mvpBoilerplateService = mvpBoilerplateService;
   }
 
+  // TODO replace with repositories and NYT Stores
   public Observable<List<String>> getPokemonList(int limit) {
     return mvpBoilerplateService
         .getPokemonList(limit)

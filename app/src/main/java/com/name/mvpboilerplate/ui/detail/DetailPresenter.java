@@ -3,6 +3,7 @@ package com.name.mvpboilerplate.ui.detail;
 import android.support.annotation.NonNull;
 import com.name.mvpboilerplate.dagger.ConfigPersistent;
 import com.name.mvpboilerplate.data.DataManager;
+import com.name.mvpboilerplate.ui.base.BaseSchedulerProvider;
 import com.name.mvpboilerplate.ui.base.mvi.MviBasePresenter;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -18,7 +19,8 @@ public class DetailPresenter extends MviBasePresenter<DetailView, DetailViewStat
   private CompositeDisposable subscriptions;
 
   @Inject
-  public DetailPresenter(DataManager dataManager) {
+  public DetailPresenter(BaseSchedulerProvider schedulerProvider, DataManager dataManager) {
+    super(schedulerProvider);
     this.dataManager = dataManager;
   }
 
@@ -44,8 +46,8 @@ public class DetailPresenter extends MviBasePresenter<DetailView, DetailViewStat
         .map(pokemon -> DetailViewState.builder().data(pokemon).build())
         .startWith(DetailViewState.builder().loading(true).build())
         .onErrorReturn(t -> DetailViewState.builder().error(t).build())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribeOn(Schedulers.io());
+        .observeOn(provider.ui())
+        .subscribeOn(provider.io());
 
     subscriptions.add(loadData.subscribe(pokemon -> getView().render(pokemon)));
   }
