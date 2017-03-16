@@ -17,8 +17,10 @@
 package com.name.mvpboilerplate.ui.main;
 
 import com.name.mvpboilerplate.ui.base.BaseDriver;
+import com.name.mvpboilerplate.ui.base.mvi.MviViewState;
 import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
+import timber.log.Timber;
 
 /**
  * This class is responsible to "drive" the MainView.
@@ -35,7 +37,7 @@ import io.reactivex.subjects.PublishSubject;
  *
  * Each intent from MainView should have a corresponding PublishSubject for testing.
  */
-public class MainViewDriver extends BaseDriver {
+public class MainViewDriver extends BaseDriver<MainViewState> {
 
   private final MainPresenter presenter;
   private final PublishSubject<Boolean> loadFirstPageSubject = PublishSubject.create();
@@ -58,7 +60,7 @@ public class MainViewDriver extends BaseDriver {
 
   public MainViewDriver(MainPresenter presenter) {
     this.presenter = presenter;
-    presenter.attachView(view);
+    this.presenter.attachView(view);
   }
 
   public void fireLoadFirstPageIntent() {
