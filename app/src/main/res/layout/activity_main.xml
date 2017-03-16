@@ -35,7 +35,7 @@
 
   </android.support.v4.widget.SwipeRefreshLayout>
 
-  <com.name.mvpboilerplate.ui.common.ErrorView
+  <com.name.mviboilerplate.ui.common.ErrorView
       android:id="@+id/view_error"
       android:layout_width="wrap_content"
       android:layout_height="match_parent"
