@@ -16,11 +16,13 @@
  */
 package com.name.mvpboilerplate.ui.main;
 
-import com.name.mvpboilerplate.ui.base.BaseDriver;
-import com.name.mvpboilerplate.ui.base.mvi.MviViewState;
 import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
-import timber.log.Timber;
+import io.reactivex.subjects.ReplaySubject;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import org.junit.Assert;
 
 /**
  * This class is responsible to "drive" the MainView.
@@ -37,11 +39,13 @@ import timber.log.Timber;
  *
  * Each intent from MainView should have a corresponding PublishSubject for testing.
  */
-public class MainViewDriver extends BaseDriver<MainViewState> {
+public class MainViewDriver {
 
   private final MainPresenter presenter;
   private final PublishSubject<Boolean> loadFirstPageSubject = PublishSubject.create();
   private final PublishSubject<Boolean> pullToRefreshSubject = PublishSubject.create();
+  protected final ReplaySubject<MainViewState> renderEventSubject = ReplaySubject.create();
+  protected final List<MainViewState> renderEvents = new CopyOnWriteArrayList<>();
 
   private MainView view = new MainView() {
     @Override public Observable<Boolean> loadFirstPageIntent() {
@@ -69,5 +73,52 @@ public class MainViewDriver extends BaseDriver<MainViewState> {
 
   public void firePullToRefreshIntent() {
     pullToRefreshSubject.onNext(true);
+  }
+
+  /**
+   * Blocking waits for view.render() calls
+   */
+  public void assertViewStateRendered(MainViewState... expectedViewStates) {
+
+    if (expectedViewStates == null) {
+      throw new NullPointerException("expectedViewStates == null");
+    }
+
+    int eventsCount = expectedViewStates.length;
+    renderEventSubject.take(eventsCount).blockingSubscribe();
+
+    /*
+    // Wait for few milli seconds to ensure that no more render events have occurred
+    // before finishing the test and checking expectations (asserts)
+    try {
+      Thread.sleep(5000);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+    */
+
+    if (renderEventSubject.getValues().length > eventsCount) {
+      Assert.fail("Expected to wait for "
+          + eventsCount
+          + ", but there were "
+          + renderEventSubject.getValues().length
+          + " Events in total, which is more than expected: "
+          + arrayToString(renderEventSubject.getValues()));
+    }
+
+    Assert.assertEquals(Arrays.asList(expectedViewStates), renderEvents);
+  }
+
+  /**
+   * Simple helper function to print the content of an array as a string
+   */
+  private String arrayToString(Object[] array) {
+    StringBuffer buffer = new StringBuffer();
+    for (Object o : array) {
+      buffer.append(o.toString());
+      buffer.append("\n");
+    }
+
+    return buffer.toString();
   }
 }

@@ -15,7 +15,7 @@ public abstract class NamedResource implements Parcelable {
     }
 
     public static Builder builder() {
-        return new AutoValue_NamedResource.Builder();
+        return new AutoValue_NamedResource.Builder().url("");
     }
 
     @AutoValue.Builder public abstract static class Builder {
