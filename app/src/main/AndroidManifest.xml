@@ -12,7 +12,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name="com.name.mviboilerplate.ui.main.MainActivity"
+            android:name="com.name.mviboilerplate.ui.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -21,11 +21,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name="com.name.mviboilerplate.ui.detail.DetailActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-
     </application>
 
 </manifest>

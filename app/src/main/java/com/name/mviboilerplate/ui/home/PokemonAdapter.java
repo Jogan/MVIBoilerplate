@@ -1,4 +1,4 @@
-package com.name.mviboilerplate.ui.main;
+package com.name.mviboilerplate.ui.home;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

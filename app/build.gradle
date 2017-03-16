@@ -105,6 +105,10 @@ android {
     exclude 'META-INF/services/javax.annotation.processing.Processor'
     exclude 'META-INF/rxjava.properties'
   }
+
+  configurations.all {
+    resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
+  }
 }
 
 dependencies {
@@ -133,7 +137,9 @@ dependencies {
 
   // TODO store impl
 
-  // TODO conductor impl
+  compile dependencies.conductor
+  compile dependencies.conductorSupport
+  compile dependencies.conductorRxLifecycle
 
   compile dependencies.glide
   compile dependencies.butterknife

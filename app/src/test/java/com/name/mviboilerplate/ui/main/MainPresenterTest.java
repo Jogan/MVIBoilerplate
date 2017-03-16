@@ -5,6 +5,8 @@ import com.name.mviboilerplate.dagger.BaseMockTest;
 import com.name.mviboilerplate.data.DataManager;
 import com.name.mviboilerplate.data.model.NamedResource;
 import com.name.mviboilerplate.data.remote.MvpBoilerplateService;
+import com.name.mviboilerplate.ui.home.HomePresenter;
+import com.name.mviboilerplate.ui.home.HomeViewState;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.util.Arrays;
@@ -41,7 +43,7 @@ public class MainPresenterTest extends BaseMockTest {
     // init the robot to drive to View which triggers intents on the presenter
     //
     DataManager dataManager = new DataManager(service);
-    MainViewDriver driver = new MainViewDriver(new MainPresenter(schedulersProvider, dataManager));
+    MainViewDriver driver = new MainViewDriver(new HomePresenter(schedulersProvider, dataManager));
     //
     // We are ready, so let's start: fire an intent
     //
@@ -57,8 +59,8 @@ public class MainPresenterTest extends BaseMockTest {
         "Squirtle",
         "Pikachu"
     );
-    MainViewState loadingFirstPage = MainViewState.builder().loadingFirstPage(true).build();
-    MainViewState data = MainViewState.builder().data(expectedData).build();
+    HomeViewState loadingFirstPage = HomeViewState.builder().loadingFirstPage(true).build();
+    HomeViewState data = HomeViewState.builder().data(expectedData).build();
     // Check if as expected
     testScheduler.triggerActions();
     driver.assertViewStateRendered(loadingFirstPage, data);
@@ -73,7 +75,7 @@ public class MainPresenterTest extends BaseMockTest {
     // init the robot to drive to View which triggers intents on the presenter
     //
     DataManager dataManager = new DataManager(service);
-    MainViewDriver driver = new MainViewDriver(new MainPresenter(schedulersProvider, dataManager));
+    MainViewDriver driver = new MainViewDriver(new HomePresenter(schedulersProvider, dataManager));
     //
     // We are ready, so let's start: fire an intent
     //
@@ -83,8 +85,8 @@ public class MainPresenterTest extends BaseMockTest {
     // 1. show loading indicator
     // 2. show error indicator
     //
-    MainViewState loadingFirstPage = MainViewState.builder().loadingFirstPage(true).build();
-    MainViewState errorFirstPage = MainViewState.builder().firstPageError(new ConnectException()).build();
+    HomeViewState loadingFirstPage = HomeViewState.builder().loadingFirstPage(true).build();
+    HomeViewState errorFirstPage = HomeViewState.builder().firstPageError(new ConnectException()).build();
     // Check if as expected
     testScheduler.triggerActions();
     driver.assertViewStateRendered(loadingFirstPage, errorFirstPage);

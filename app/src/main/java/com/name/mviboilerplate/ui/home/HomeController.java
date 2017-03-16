@@ -1,65 +1,63 @@
-package com.name.mviboilerplate.ui.main;
+package com.name.mviboilerplate.ui.home;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import butterknife.BindView;
-import butterknife.ButterKnife;
+import com.bluelinelabs.conductor.RouterTransaction;
+import com.bluelinelabs.conductor.changehandler.FadeChangeHandler;
 import com.jakewharton.rxbinding2.support.v4.widget.RxSwipeRefreshLayout;
 import com.name.mviboilerplate.R;
-import com.name.mviboilerplate.dagger.ActivityComponent;
-import com.name.mviboilerplate.ui.base.BaseActivity;
+import com.name.mviboilerplate.ui.base.BaseMviController;
 import com.name.mviboilerplate.ui.common.ErrorView;
-import com.name.mviboilerplate.ui.detail.DetailActivity;
+import com.name.mviboilerplate.ui.detail.DetailController;
 import io.reactivex.Observable;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-public class MainActivity extends BaseActivity implements MainView, PokemonAdapter.ClickListener,
-    ErrorView.ErrorListener {
-
-  @Inject PokemonAdapter pokemonAdapter;
-  @Inject MainPresenter mainPresenter;
+public class HomeController extends BaseMviController<HomeView, HomeViewState, HomePresenter>
+    implements HomeView, PokemonAdapter.ClickListener, ErrorView.ErrorListener {
 
   @BindView(R.id.view_error) ErrorView errorView;
   @BindView(R.id.progress) ProgressBar progress;
   @BindView(R.id.recycler_pokemon) RecyclerView pokemonRecycler;
   @BindView(R.id.swipe_to_refresh) SwipeRefreshLayout swipeRefreshLayout;
-  @BindView(R.id.toolbar) Toolbar toolbar;
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
-    ButterKnife.bind(this);
+  @Inject PokemonAdapter pokemonAdapter;
 
-    mainPresenter.attachView(this);
+  public HomeController() {
+    this(null);
+  }
 
-    setSupportActionBar(toolbar);
+  public HomeController(Bundle args) {
+    super(args);
+  }
 
+  @Override protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
+    return inflater.inflate(R.layout.controller_home, container, false);
+  }
+
+  @Override protected void onViewBound(@NonNull View view) {
+    super.onViewBound(view);
     swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.primary);
     swipeRefreshLayout.setColorSchemeResources(R.color.white);
 
     pokemonAdapter.setClickListener(this);
-    pokemonRecycler.setLayoutManager(new LinearLayoutManager(this));
+    pokemonRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
     pokemonRecycler.setAdapter(pokemonAdapter);
 
     errorView.setErrorListener(this);
   }
 
-  @Override protected void injectFrom(ActivityComponent activityComponent) {
-    activityComponent.inject(this);
-  }
-
-  @Override
-  protected void onDestroy() {
-    super.onDestroy();
-    mainPresenter.detachView(false);
+  @Override protected void injectController() {
+    getControllerComponent().inject(this);
   }
 
   @Override public Observable<Boolean> loadFirstPageIntent() {
@@ -70,7 +68,7 @@ public class MainActivity extends BaseActivity implements MainView, PokemonAdapt
     return RxSwipeRefreshLayout.refreshes(swipeRefreshLayout).map(ignored -> true);
   }
 
-  @Override public void render(MainViewState viewState) {
+  @Override public void render(HomeViewState viewState) {
     Timber.d("render %s", viewState);
     if (!viewState.loadingFirstPage() && viewState.firstPageError() == null) {
       renderShowData(viewState);
@@ -83,7 +81,7 @@ public class MainActivity extends BaseActivity implements MainView, PokemonAdapt
     }
   }
 
-  private void renderShowData(MainViewState viewState) {
+  private void renderShowData(HomeViewState viewState) {
     progress.setVisibility(View.GONE);
     errorView.setVisibility(View.GONE);
     pokemonRecycler.setVisibility(View.VISIBLE);
@@ -103,7 +101,7 @@ public class MainActivity extends BaseActivity implements MainView, PokemonAdapt
     swipeRefreshLayout.setRefreshing(viewState.loadingPullToRefresh());
 
     if (viewState.pullToRefreshError() != null) {
-      Toast.makeText(this, R.string.error_message, Toast.LENGTH_LONG).show();
+      Toast.makeText(getActivity(), R.string.error_message, Toast.LENGTH_LONG).show();
     }
   }
 
@@ -123,7 +121,14 @@ public class MainActivity extends BaseActivity implements MainView, PokemonAdapt
 
   @Override
   public void onPokemonClick(String pokemon) {
-    startActivity(DetailActivity.getStartIntent(this, pokemon));
+
+    final DetailController detailController = new DetailController(pokemon);
+
+    getRouter()
+        .pushController(RouterTransaction
+            .with(detailController)
+            .popChangeHandler(new FadeChangeHandler())
+            .popChangeHandler(new FadeChangeHandler()));
   }
 
   // TODO replace with intent

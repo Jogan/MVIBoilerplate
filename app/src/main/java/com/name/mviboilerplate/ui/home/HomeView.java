@@ -1,9 +1,9 @@
-package com.name.mviboilerplate.ui.main;
+package com.name.mviboilerplate.ui.home;
 
 import com.name.mviboilerplate.ui.base.mvi.MviView;
 import io.reactivex.Observable;
 
-public interface MainView extends MviView {
+public interface HomeView extends MviView {
 
   /**
    * The intent to load the first page
@@ -22,5 +22,5 @@ public interface MainView extends MviView {
   /**
    * Renders the viewState
    */
-  void render(MainViewState viewState);
+  void render(HomeViewState viewState);
 }

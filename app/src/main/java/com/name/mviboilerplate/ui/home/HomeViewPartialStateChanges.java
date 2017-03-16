@@ -1,21 +1,21 @@
-package com.name.mviboilerplate.ui.main;
+package com.name.mviboilerplate.ui.home;
 
 import java.util.List;
 
-public interface MainViewPartialStateChanges {
+public interface HomeViewPartialStateChanges {
 
-  MainViewState computeNewState(MainViewState previousState);
+  HomeViewState computeNewState(HomeViewState previousState);
 
   /**
    * Indicates that the first page is loading
    */
-  final class FirstPageLoading implements MainViewPartialStateChanges {
+  final class FirstPageLoading implements HomeViewPartialStateChanges {
 
     @Override public String toString() {
       return "FirstPageLoadingState{}";
     }
 
-    @Override public MainViewState computeNewState(MainViewState previousState) {
+    @Override public HomeViewState computeNewState(HomeViewState previousState) {
       return previousState.toBuilder()
                           .loadingFirstPage(true)
                           .firstPageError(null)
@@ -26,7 +26,7 @@ public interface MainViewPartialStateChanges {
   /**
    * Indicates that an error has occurred while loading the first page
    */
-  final class FirstPageError implements MainViewPartialStateChanges {
+  final class FirstPageError implements HomeViewPartialStateChanges {
     private final Throwable error;
 
     public FirstPageError(Throwable error) {
@@ -43,7 +43,7 @@ public interface MainViewPartialStateChanges {
           '}';
     }
 
-    @Override public MainViewState computeNewState(MainViewState previousState) {
+    @Override public HomeViewState computeNewState(HomeViewState previousState) {
       return previousState.toBuilder()
                           .firstPageError(getError())
                           .loadingFirstPage(false)
@@ -54,7 +54,7 @@ public interface MainViewPartialStateChanges {
   /**
    * Indicates that the first page data has been loaded successfully
    */
-  final class FirstPageLoaded implements MainViewPartialStateChanges {
+  final class FirstPageLoaded implements HomeViewPartialStateChanges {
     private final List<String> data;
 
     public FirstPageLoaded(List<String> data) {
@@ -65,7 +65,7 @@ public interface MainViewPartialStateChanges {
       return data;
     }
 
-    @Override public MainViewState computeNewState(MainViewState previousState) {
+    @Override public HomeViewState computeNewState(HomeViewState previousState) {
       return previousState.toBuilder()
                           .data(getData())
                           .loadingFirstPage(false)
@@ -77,9 +77,9 @@ public interface MainViewPartialStateChanges {
   /**
    * Indicates that loading the newest items via pull to refresh has started
    */
-  final class PullToRefreshLoading implements MainViewPartialStateChanges {
+  final class PullToRefreshLoading implements HomeViewPartialStateChanges {
 
-    @Override public MainViewState computeNewState(MainViewState previousState) {
+    @Override public HomeViewState computeNewState(HomeViewState previousState) {
       return previousState.toBuilder()
                           .loadingPullToRefresh(true)
                           .pullToRefreshError(null)
@@ -90,7 +90,7 @@ public interface MainViewPartialStateChanges {
   /**
    * Indicates that an error while loading the newest items via pull to refresh has occurred
    */
-  final class PullToRefeshLoadingError implements MainViewPartialStateChanges {
+  final class PullToRefeshLoadingError implements HomeViewPartialStateChanges {
     private final Throwable error;
 
     public PullToRefeshLoadingError(Throwable error) {
@@ -101,7 +101,7 @@ public interface MainViewPartialStateChanges {
       return error;
     }
 
-    @Override public MainViewState computeNewState(MainViewState previousState) {
+    @Override public HomeViewState computeNewState(HomeViewState previousState) {
       return previousState.toBuilder()
                           .pullToRefreshError(getError())
                           .loadingPullToRefresh(false)
@@ -112,7 +112,7 @@ public interface MainViewPartialStateChanges {
   /**
    * Indicates that data has been loaded successfully over pull-to-refresh
    */
-  final class PullToRefreshLoaded implements MainViewPartialStateChanges {
+  final class PullToRefreshLoaded implements HomeViewPartialStateChanges {
     private final List<String> data;
 
     public PullToRefreshLoaded(List<String> data) {
@@ -123,7 +123,7 @@ public interface MainViewPartialStateChanges {
       return data;
     }
 
-    @Override public MainViewState computeNewState(MainViewState previousState) {
+    @Override public HomeViewState computeNewState(HomeViewState previousState) {
       return previousState.toBuilder()
                           .loadingPullToRefresh(false)
                           .pullToRefreshError(null)

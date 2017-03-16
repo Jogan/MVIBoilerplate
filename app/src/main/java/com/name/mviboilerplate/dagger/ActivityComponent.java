@@ -1,8 +1,7 @@
 package com.name.mviboilerplate.dagger;
 
 import com.name.mviboilerplate.ui.base.BaseActivity;
-import com.name.mviboilerplate.ui.detail.DetailActivity;
-import com.name.mviboilerplate.ui.main.MainActivity;
+import com.name.mviboilerplate.ui.MainActivity;
 import dagger.Component;
 
 @Component(
@@ -13,6 +12,4 @@ public interface ActivityComponent {
   void inject(BaseActivity baseActivity);
 
   void inject(MainActivity mainActivity);
-
-  void inject(DetailActivity detailActivity);
 }

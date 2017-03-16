@@ -1,4 +1,4 @@
-package com.name.mviboilerplate.ui.main;
+package com.name.mviboilerplate.ui.home;
 
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 @AutoValue
-public abstract class MainViewState implements MviViewState, Parcelable {
+public abstract class HomeViewState implements MviViewState, Parcelable {
 
   public abstract boolean loadingFirstPage();
 
@@ -23,8 +23,7 @@ public abstract class MainViewState implements MviViewState, Parcelable {
   public abstract Throwable pullToRefreshError();
 
   public static Builder builder() {
-    return new AutoValue_MainViewState
-        .Builder()
+    return new AutoValue_HomeViewState.Builder()
         .loadingFirstPage(false)
         .firstPageError(null)
         .data(Collections.emptyList())
@@ -33,7 +32,7 @@ public abstract class MainViewState implements MviViewState, Parcelable {
   }
 
   public Builder toBuilder() {
-    return new AutoValue_MainViewState.Builder(this);
+    return new AutoValue_HomeViewState.Builder(this);
   }
 
   @AutoValue.Builder
@@ -49,6 +48,6 @@ public abstract class MainViewState implements MviViewState, Parcelable {
 
     public abstract Builder pullToRefreshError(Throwable pullToRefreshError);
 
-    public abstract MainViewState build();
+    public abstract HomeViewState build();
   }
 }

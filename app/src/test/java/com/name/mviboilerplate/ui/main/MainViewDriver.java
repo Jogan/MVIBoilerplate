@@ -16,6 +16,9 @@
  */
 package com.name.mviboilerplate.ui.main;
 
+import com.name.mviboilerplate.ui.home.HomePresenter;
+import com.name.mviboilerplate.ui.home.HomeView;
+import com.name.mviboilerplate.ui.home.HomeViewState;
 import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.ReplaySubject;
@@ -25,8 +28,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.junit.Assert;
 
 /**
- * This class is responsible to "drive" the MainView.
- * Internally this creates a {@link MainView} and attaches it to the {@link MainPresenter}
+ * This class is responsible to "drive" the HomeView.
+ * Internally this creates a {@link HomeView} and attaches it to the {@link HomePresenter}
  * and offers public API to fire view intents and to check for expected view.render() events.
  *
  * <p>
@@ -41,13 +44,13 @@ import org.junit.Assert;
  */
 public class MainViewDriver {
 
-  private final MainPresenter presenter;
+  private final HomePresenter presenter;
   private final PublishSubject<Boolean> loadFirstPageSubject = PublishSubject.create();
   private final PublishSubject<Boolean> pullToRefreshSubject = PublishSubject.create();
-  protected final ReplaySubject<MainViewState> renderEventSubject = ReplaySubject.create();
-  protected final List<MainViewState> renderEvents = new CopyOnWriteArrayList<>();
+  protected final ReplaySubject<HomeViewState> renderEventSubject = ReplaySubject.create();
+  protected final List<HomeViewState> renderEvents = new CopyOnWriteArrayList<>();
 
-  private MainView view = new MainView() {
+  private HomeView view = new HomeView() {
     @Override public Observable<Boolean> loadFirstPageIntent() {
       return loadFirstPageSubject;
     }
@@ -56,13 +59,13 @@ public class MainViewDriver {
       return pullToRefreshSubject;
     }
 
-    @Override public void render(MainViewState viewState) {
+    @Override public void render(HomeViewState viewState) {
       renderEvents.add(viewState);
       renderEventSubject.onNext(viewState);
     }
   };
 
-  public MainViewDriver(MainPresenter presenter) {
+  public MainViewDriver(HomePresenter presenter) {
     this.presenter = presenter;
     this.presenter.attachView(view);
   }
@@ -78,7 +81,7 @@ public class MainViewDriver {
   /**
    * Blocking waits for view.render() calls
    */
-  public void assertViewStateRendered(MainViewState... expectedViewStates) {
+  public void assertViewStateRendered(HomeViewState... expectedViewStates) {
 
     if (expectedViewStates == null) {
       throw new NullPointerException("expectedViewStates == null");
