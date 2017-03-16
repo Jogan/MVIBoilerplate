@@ -16,7 +16,7 @@
  */
 package com.name.mvpboilerplate.ui.main;
 
-import com.name.mvpboilerplate.base.BaseDriver;
+import com.name.mvpboilerplate.ui.base.BaseDriver;
 import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
 

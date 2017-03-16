@@ -2,10 +2,10 @@ package com.name.mvpboilerplate;
 
 import android.app.Application;
 import android.content.Context;
-import com.name.mvpboilerplate.dagger.component.ApplicationComponent;
-import com.name.mvpboilerplate.dagger.component.DaggerApplicationComponent;
-import com.name.mvpboilerplate.dagger.module.ApiModule;
-import com.name.mvpboilerplate.dagger.module.ApplicationModule;
+import com.name.mvpboilerplate.dagger.ApiModule;
+import com.name.mvpboilerplate.dagger.ApplicationComponent;
+import com.name.mvpboilerplate.dagger.ApplicationModule;
+import com.name.mvpboilerplate.dagger.DaggerApplicationComponent;
 import timber.log.Timber;
 
 public class MvpBoilerplateApplication extends Application {
@@ -28,15 +28,11 @@ public class MvpBoilerplateApplication extends Application {
   }
 
   public void initComponent() {
-    applicationComponent = DaggerApplicationComponent.builder()
-                                                     .applicationModule(new ApplicationModule(this))
-                                                     .apiModule(new ApiModule())
-                                                     .build();
-  }
-
-  // Needed to replace the component with a test specific one
-  public void setComponent(ApplicationComponent applicationComponent) {
-    this.applicationComponent = applicationComponent;
+    applicationComponent = DaggerApplicationComponent
+        .builder()
+        .applicationModule(new ApplicationModule(this))
+        .apiModule(new ApiModule())
+        .build();
   }
 
   public ApplicationComponent getApplicationComponent() {

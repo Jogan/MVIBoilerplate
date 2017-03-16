@@ -9,7 +9,6 @@ buildscript {
 
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
-apply plugin: 'com.neenbedankt.android-apt'
 
 apply from: '../buildsystem/dependencies.gradle'
 apply from: '../config/quality/quality.gradle'
@@ -33,7 +32,7 @@ android {
     versionName globalConf.versionName
 
     multiDexEnabled true
-    testInstrumentationRunner "com.name.mvpboilerplate.runner.RxAndroidJUnitRunner"
+    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     buildConfigField("String", "POKEAPI_API_URL", "\"${PokeapiApiUrl}\"")
   }
@@ -171,17 +170,17 @@ dependencies {
   testCompile dependencies.hamcrestIntegration
   testCompile dependencies.roboElectric
   testCompile dependencies.mockWebServer
+  
+  // APT dependencies
+  annotationProcessor dependencies.butterknifeCompiler
+  annotationProcessor dependencies.daggerCompiler
+  annotationProcessor dependencies.autoValue
+  annotationProcessor dependencies.autoValueParcel
+  annotationProcessor dependencies.autoValueGson
+  testAnnotationProcessor dependencies.daggerCompiler
+  androidTestAnnotationProcessor dependencies.daggerCompiler
 
   testCompile project(':mocks')
-
-  // APT depeddndencies
-  apt dependencies.butterknifeCompiler
-  apt dependencies.daggerCompiler
-  apt dependencies.autoValue
-  apt dependencies.autoValueParcel
-  apt dependencies.autoValueGson
-  testApt dependencies.daggerCompiler
-  androidTestApt dependencies.daggerCompiler
 }
 
 class VersionCodeReader {

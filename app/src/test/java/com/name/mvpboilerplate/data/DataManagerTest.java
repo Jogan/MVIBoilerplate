@@ -1,8 +1,10 @@
 package com.name.mvpboilerplate.data;
 
 import com.name.mvpboilerplate.dagger.BaseLogicTest;
+import com.name.mvpboilerplate.data.model.Pokemon;
 import com.name.mvpboilerplate.data.remote.MvpBoilerplateService;
 import io.reactivex.observers.TestObserver;
+import java.util.List;
 import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,13 +21,24 @@ public class DataManagerTest extends BaseLogicTest {
   }
 
   @Test
-  public void testGetPokemonStringObservable() {
+  public void testGetPokemonObservable() {
     DataManager dataManager = new DataManager(pokemonService);
-    TestObserver observer = new TestObserver();
+    TestObserver<List<String>> observer = new TestObserver<>();
     dataManager.getPokemonList(20).subscribe(observer);
     observer.assertNoErrors();
     observer.awaitTerminalEvent();
     observer.assertComplete();
-    observer.assertValueCount(20);
+    observer.assertValue(l -> l.size() == 20);
+  }
+
+  @Test
+  public void testGetPokemonByNameObservable() {
+    DataManager dataManager = new DataManager(pokemonService);
+    TestObserver<Pokemon> observer = new TestObserver<>();
+    dataManager.getPokemon("butterfree").subscribe(observer);
+    observer.assertNoErrors();
+    observer.awaitTerminalEvent();
+    observer.assertComplete();
+    observer.assertValue(pokemon -> pokemon.name().equalsIgnoreCase("butterfree"));
   }
 }

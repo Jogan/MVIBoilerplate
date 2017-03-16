@@ -1,18 +1,14 @@
 package com.name.mvpboilerplate.ui.detail;
 
 import android.support.annotation.NonNull;
-import com.name.mvpboilerplate.dagger.ConfigPersistent;
 import com.name.mvpboilerplate.data.DataManager;
 import com.name.mvpboilerplate.ui.base.BaseSchedulerProvider;
 import com.name.mvpboilerplate.ui.base.mvi.MviBasePresenter;
 import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-@ConfigPersistent
 public class DetailPresenter extends MviBasePresenter<DetailView, DetailViewState> {
 
   private final DataManager dataManager;

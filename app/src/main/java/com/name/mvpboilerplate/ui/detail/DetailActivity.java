@@ -13,6 +13,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.bumptech.glide.Glide;
 import com.name.mvpboilerplate.R;
+import com.name.mvpboilerplate.dagger.ActivityComponent;
 import com.name.mvpboilerplate.data.model.Pokemon;
 import com.name.mvpboilerplate.data.model.Statistic;
 import com.name.mvpboilerplate.ui.base.BaseActivity;
@@ -46,7 +47,6 @@ public class DetailActivity extends BaseActivity implements DetailView, ErrorVie
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    activityComponent().inject(this);
     setContentView(R.layout.activity_detail);
     ButterKnife.bind(this);
 
@@ -63,6 +63,10 @@ public class DetailActivity extends BaseActivity implements DetailView, ErrorVie
     errorView.setErrorListener(this);
 
     detailPresenter.attachView(this);
+  }
+
+  @Override protected void injectFrom(ActivityComponent activityComponent) {
+    activityComponent.inject(this);
   }
 
   @Override public Observable<String> loadDataIntent() {

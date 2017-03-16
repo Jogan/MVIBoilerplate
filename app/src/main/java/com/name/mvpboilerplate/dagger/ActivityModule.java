@@ -1,14 +1,15 @@
-package com.name.mvpboilerplate.dagger.module;
+package com.name.mvpboilerplate.dagger;
 
 import android.app.Activity;
 import android.content.Context;
 
-import com.name.mvpboilerplate.dagger.ActivityContext;
+import com.name.mvpboilerplate.dagger.ActivityScope;
 
 import dagger.Module;
 import dagger.Provides;
 
 @Module
+@ActivityScope
 public class ActivityModule {
 
     private Activity activity;
@@ -19,12 +20,6 @@ public class ActivityModule {
 
     @Provides
     Activity provideActivity() {
-        return activity;
-    }
-
-    @Provides
-    @ActivityContext
-    Context providesContext() {
         return activity;
     }
 }

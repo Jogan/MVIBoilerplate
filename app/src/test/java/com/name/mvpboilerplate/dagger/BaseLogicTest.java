@@ -57,9 +57,10 @@ public class BaseLogicTest {
 
   protected LogicTestComponent getComponent() {
     if (component == null) {
-      component = DaggerLogicTestComponent.builder()
-                                          .logicTestModule(new LogicTestModule())
-                                          .build();
+      component = DaggerLogicTestComponent
+          .builder()
+          .logicTestModule(new LogicTestModule())
+          .build();
     }
 
     return component;

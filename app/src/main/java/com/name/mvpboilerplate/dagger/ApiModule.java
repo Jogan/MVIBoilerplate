@@ -1,4 +1,4 @@
-package com.name.mvpboilerplate.dagger.module;
+package com.name.mvpboilerplate.dagger;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -20,13 +20,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiModule {
 
   public ApiModule() {
-
-  }
-
-  @Provides
-  @Singleton
-  public MvpBoilerplateService provideApiService(Retrofit retrofit) {
-    return retrofit.create(MvpBoilerplateService.class);
   }
 
   @Provides
@@ -76,5 +69,11 @@ public class ApiModule {
 
   protected String getBaseUrl() {
     return BuildConfig.POKEAPI_API_URL;
+  }
+
+  @Provides
+  @Singleton
+  public MvpBoilerplateService provideApiService(Retrofit retrofit) {
+    return retrofit.create(MvpBoilerplateService.class);
   }
 }

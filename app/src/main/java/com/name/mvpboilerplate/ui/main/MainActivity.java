@@ -1,7 +1,6 @@
 package com.name.mvpboilerplate.ui.main;
 
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +12,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.jakewharton.rxbinding2.support.v4.widget.RxSwipeRefreshLayout;
 import com.name.mvpboilerplate.R;
+import com.name.mvpboilerplate.dagger.ActivityComponent;
 import com.name.mvpboilerplate.ui.base.BaseActivity;
 import com.name.mvpboilerplate.ui.common.ErrorView;
 import com.name.mvpboilerplate.ui.detail.DetailActivity;
@@ -35,7 +35,6 @@ public class MainActivity extends BaseActivity implements MainView, PokemonAdapt
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    activityComponent().inject(this);
     setContentView(R.layout.activity_main);
     ButterKnife.bind(this);
 
@@ -51,6 +50,10 @@ public class MainActivity extends BaseActivity implements MainView, PokemonAdapt
     pokemonRecycler.setAdapter(pokemonAdapter);
 
     errorView.setErrorListener(this);
+  }
+
+  @Override protected void injectFrom(ActivityComponent activityComponent) {
+    activityComponent.inject(this);
   }
 
   @Override

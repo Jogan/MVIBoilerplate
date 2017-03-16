@@ -1,4 +1,4 @@
-package com.name.mvpboilerplate.base;
+package com.name.mvpboilerplate.ui.base;
 
 import com.name.mvpboilerplate.ui.base.mvi.MviViewState;
 import io.reactivex.subjects.ReplaySubject;

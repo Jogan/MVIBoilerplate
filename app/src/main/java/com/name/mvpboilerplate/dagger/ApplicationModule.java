@@ -1,8 +1,6 @@
-package com.name.mvpboilerplate.dagger.module;
+package com.name.mvpboilerplate.dagger;
 
 import android.app.Application;
-import android.content.Context;
-import com.name.mvpboilerplate.dagger.ApplicationContext;
 import com.name.mvpboilerplate.data.SchedulerProvider;
 import com.name.mvpboilerplate.ui.base.BaseSchedulerProvider;
 import dagger.Module;
@@ -18,13 +16,8 @@ public class ApplicationModule {
   }
 
   @Provides
+  @Singleton
   Application provideApplication() {
-    return application;
-  }
-
-  @Provides
-  @ApplicationContext
-  Context provideContext() {
     return application;
   }
 

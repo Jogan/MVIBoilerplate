@@ -1,7 +1,6 @@
 package com.name.mvpboilerplate.dagger;
 
 import android.support.annotation.NonNull;
-import com.name.mvpboilerplate.dagger.module.ApiModule;
 import com.name.mvpboilerplate.data.LocalResponseDispatcher;
 import dagger.Module;
 import dagger.Provides;

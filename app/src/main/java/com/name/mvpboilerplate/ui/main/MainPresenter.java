@@ -1,18 +1,14 @@
 package com.name.mvpboilerplate.ui.main;
 
 import android.support.annotation.NonNull;
-import com.name.mvpboilerplate.dagger.ConfigPersistent;
 import com.name.mvpboilerplate.data.DataManager;
 import com.name.mvpboilerplate.ui.base.BaseSchedulerProvider;
 import com.name.mvpboilerplate.ui.base.mvi.MviBasePresenter;
 import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-@ConfigPersistent
 public class MainPresenter extends MviBasePresenter<MainView, MainViewState> {
   private static final int POKEMON_COUNT = 20;
 
