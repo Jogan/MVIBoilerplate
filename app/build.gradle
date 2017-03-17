@@ -3,7 +3,7 @@ buildscript {
     jcenter()
   }
   dependencies {
-    classpath 'me.tatarka:gradle-retrolambda:3.2.5'
+    classpath 'me.tatarka:gradle-retrolambda:3.6.0'
   }
 }
 
@@ -126,6 +126,7 @@ dependencies {
   compile dependencies.retrofitAdapterRxJava2
   compile dependencies.okhttp
   compile dependencies.okhttpLogging
+  compile dependencies.okio
   compile dependencies.gson
 
   compile dependencies.rxAndroid2
@@ -134,8 +135,12 @@ dependencies {
   compile dependencies.rxBindingSupport
   compile dependencies.rxBindingAppCompat
   compile dependencies.rxBindingDesign
+  compile dependencies.rxJavaInterOp // TODO remove once Store supports RxJava2
 
-  // TODO store impl
+  compile dependencies.store
+  compile dependencies.storeCache
+  compile dependencies.storeMiddleware
+  compile dependencies.storeFileSystem
 
   compile dependencies.conductor
   compile dependencies.conductorSupport

@@ -1,9 +1,6 @@
 package com.name.mviboilerplate.ui.base;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.MenuItem;
-import butterknife.ButterKnife;
 import com.name.mviboilerplate.MviBoilerplateApplication;
 import com.name.mviboilerplate.dagger.ActivityComponent;
 import com.name.mviboilerplate.dagger.ActivityModule;

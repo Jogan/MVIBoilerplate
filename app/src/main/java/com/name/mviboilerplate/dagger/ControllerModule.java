@@ -1,6 +1,5 @@
 package com.name.mviboilerplate.dagger;
 
-import android.app.Activity;
 import com.bluelinelabs.conductor.Controller;
 import dagger.Module;
 import dagger.Provides;

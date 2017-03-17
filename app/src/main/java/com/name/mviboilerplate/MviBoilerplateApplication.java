@@ -6,6 +6,7 @@ import com.name.mviboilerplate.dagger.ApiModule;
 import com.name.mviboilerplate.dagger.ApplicationComponent;
 import com.name.mviboilerplate.dagger.ApplicationModule;
 import com.name.mviboilerplate.dagger.DaggerApplicationComponent;
+import com.name.mviboilerplate.dagger.StoreModule;
 import timber.log.Timber;
 
 public class MviBoilerplateApplication extends Application {
@@ -32,6 +33,7 @@ public class MviBoilerplateApplication extends Application {
         .builder()
         .applicationModule(new ApplicationModule(this))
         .apiModule(new ApiModule())
+        .storeModule(new StoreModule())
         .build();
   }
 

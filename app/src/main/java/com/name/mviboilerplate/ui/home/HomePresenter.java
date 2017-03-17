@@ -1,24 +1,32 @@
 package com.name.mviboilerplate.ui.home;
 
 import android.support.annotation.NonNull;
-import com.name.mviboilerplate.data.DataManager;
+import com.name.mviboilerplate.data.model.NamedResource;
+import com.name.mviboilerplate.data.remote.Responses;
 import com.name.mviboilerplate.ui.base.BaseSchedulerProvider;
 import com.name.mviboilerplate.ui.base.mvi.MviBasePresenter;
+import com.nytimes.android.external.store.base.impl.BarCode;
+import com.nytimes.android.external.store.base.impl.Store;
+import hu.akarnokd.rxjava.interop.RxJavaInterop;
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
+import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
 public class HomePresenter extends MviBasePresenter<HomeView, HomeViewState> {
-  private static final int POKEMON_COUNT = 20;
 
-  private final DataManager dataManager;
+  private final Store<Responses.PokemonListResponse, BarCode> pokemonListStore;
+  private final BarCode listRequest = new BarCode(Responses.PokemonListResponse.class.getSimpleName(), "list");
+
   private CompositeDisposable subscriptions;
 
   @Inject
-  public HomePresenter(BaseSchedulerProvider schedulerProvider, DataManager dataManager) {
+  public HomePresenter(
+      BaseSchedulerProvider schedulerProvider,
+      Store<Responses.PokemonListResponse, BarCode> pokemonListStore) {
     super(schedulerProvider);
-    this.dataManager = dataManager;
+    this.pokemonListStore = pokemonListStore;
   }
 
   @Override
@@ -28,12 +36,14 @@ public class HomePresenter extends MviBasePresenter<HomeView, HomeViewState> {
   }
 
   @Override protected void bindIntents() {
+    Timber.d("## bindIntents()");
 
     Observable<HomeViewPartialStateChanges> loadFirstPage = getView()
         .loadFirstPageIntent()
         .doOnNext(ignored -> Timber.d("intent: load initial data"))
-        .switchMap(ignored -> dataManager
-            .getPokemonList(POKEMON_COUNT)
+        .switchMap(ignored -> RxJavaInterop
+            .toV2Observable(pokemonListStore.get(listRequest)
+                                            .compose(convertToListOfNames()))
             .map(list -> (HomeViewPartialStateChanges) new HomeViewPartialStateChanges.FirstPageLoaded(list))
             .startWith(new HomeViewPartialStateChanges.FirstPageLoading())
             .onErrorReturn(HomeViewPartialStateChanges.FirstPageError::new)
@@ -42,8 +52,9 @@ public class HomePresenter extends MviBasePresenter<HomeView, HomeViewState> {
     Observable<HomeViewPartialStateChanges> pullToRefresh = getView()
         .pullToRefreshIntent()
         .doOnNext(ignored -> Timber.d("intent: pull to refresh"))
-        .switchMap(ignored -> dataManager
-            .getPokemonList(POKEMON_COUNT)
+        .switchMap(ignored -> RxJavaInterop
+            .toV2Observable(pokemonListStore.fetch(listRequest)
+                                            .compose(convertToListOfNames()))
             .map(list -> (HomeViewPartialStateChanges) new HomeViewPartialStateChanges.PullToRefreshLoaded(list))
             .startWith(new HomeViewPartialStateChanges.PullToRefreshLoading())
             .onErrorReturn(HomeViewPartialStateChanges.PullToRefeshLoadingError::new)
@@ -65,6 +76,13 @@ public class HomePresenter extends MviBasePresenter<HomeView, HomeViewState> {
             .doOnNext(viewState -> Timber.d("## HomeViewState -> %s", viewState.toString()))
             .subscribe(mainViewState -> getView().render(mainViewState))
     );
+  }
+
+  private rx.Observable.Transformer<Responses.PokemonListResponse, List<String>> convertToListOfNames() {
+    return observable -> observable.map(pokemonListResponse -> pokemonListResponse.results)
+                                   .concatMapIterable(list -> list)
+                                   .map(NamedResource::name)
+                                   .toList();
   }
 
   private HomeViewState viewStateReducer(HomeViewState previousState, HomeViewPartialStateChanges partialChanges) {
