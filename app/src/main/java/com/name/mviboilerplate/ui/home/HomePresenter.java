@@ -42,8 +42,7 @@ public class HomePresenter extends MviBasePresenter<HomeView, HomeViewState> {
         .loadFirstPageIntent()
         .doOnNext(ignored -> Timber.d("intent: load initial data"))
         .switchMap(ignored -> RxJavaInterop
-            .toV2Observable(pokemonListStore.get(listRequest)
-                                            .compose(convertToListOfNames()))
+            .toV2Observable(pokemonListStore.get(listRequest).compose(convertToListOfNames()))
             .map(list -> (HomeViewPartialStateChanges) new HomeViewPartialStateChanges.FirstPageLoaded(list))
             .startWith(new HomeViewPartialStateChanges.FirstPageLoading())
             .onErrorReturn(HomeViewPartialStateChanges.FirstPageError::new)
@@ -53,8 +52,7 @@ public class HomePresenter extends MviBasePresenter<HomeView, HomeViewState> {
         .pullToRefreshIntent()
         .doOnNext(ignored -> Timber.d("intent: pull to refresh"))
         .switchMap(ignored -> RxJavaInterop
-            .toV2Observable(pokemonListStore.fetch(listRequest)
-                                            .compose(convertToListOfNames()))
+            .toV2Observable(pokemonListStore.fetch(listRequest).compose(convertToListOfNames()))
             .map(list -> (HomeViewPartialStateChanges) new HomeViewPartialStateChanges.PullToRefreshLoaded(list))
             .startWith(new HomeViewPartialStateChanges.PullToRefreshLoading())
             .onErrorReturn(HomeViewPartialStateChanges.PullToRefeshLoadingError::new)

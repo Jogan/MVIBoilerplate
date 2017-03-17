@@ -13,6 +13,9 @@ public interface MvpBoilerplateService {
     @GET("pokemon")
     Observable<ResponseBody> fetchPokemonForPersister(@Query("limit") int limit);
 
+    @GET("pokemon")
+    Observable<Responses.PokemonListResponse> getPokemonList(@Query("limit") int limit);
+
     @GET("pokemon/{name}")
     Observable<Pokemon> getPokemon(@Path("name") String name);
 

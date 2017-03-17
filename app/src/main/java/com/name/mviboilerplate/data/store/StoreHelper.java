@@ -4,6 +4,7 @@ import com.nytimes.android.external.store.base.Parser;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.Store;
+import java.util.concurrent.TimeUnit;
 import okio.BufferedSource;
 
 /**
@@ -17,4 +18,6 @@ public interface StoreHelper {
   <T> Parser<BufferedSource, T> getDefaultParser(Class<T> classType);
 
   Persister<BufferedSource, BarCode> getDefaultPersister();
+
+  Persister<BufferedSource, BarCode> getDefaultPersister(long expirationDuration, TimeUnit expirationUnit);
 }
