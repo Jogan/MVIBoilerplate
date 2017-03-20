@@ -1,4 +1,4 @@
-package com.name.mviboilerplate.ui.base;
+package com.name.mviboilerplate.data;
 
 import android.support.annotation.NonNull;
 import io.reactivex.Scheduler;

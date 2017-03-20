@@ -2,7 +2,7 @@ package com.name.mviboilerplate.dagger;
 
 import android.app.Application;
 import com.name.mviboilerplate.data.SchedulerProvider;
-import com.name.mviboilerplate.ui.base.BaseSchedulerProvider;
+import com.name.mviboilerplate.data.BaseSchedulerProvider;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;

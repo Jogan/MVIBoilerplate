@@ -1,7 +1,7 @@
 package com.name.mviboilerplate.dagger;
 
 import android.support.annotation.NonNull;
-import com.name.mviboilerplate.ui.base.BaseSchedulerProvider;
+import com.name.mviboilerplate.data.BaseSchedulerProvider;
 import io.reactivex.Scheduler;
 import io.reactivex.schedulers.TestScheduler;
 import javax.inject.Inject;

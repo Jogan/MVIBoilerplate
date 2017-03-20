@@ -2,7 +2,7 @@ package com.name.mviboilerplate.ui.detail;
 
 import android.support.annotation.NonNull;
 import com.name.mviboilerplate.data.DataManager;
-import com.name.mviboilerplate.ui.base.BaseSchedulerProvider;
+import com.name.mviboilerplate.data.BaseSchedulerProvider;
 import com.name.mviboilerplate.ui.base.mvi.MviBasePresenter;
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;

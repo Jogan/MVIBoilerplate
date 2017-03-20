@@ -3,7 +3,7 @@ package com.name.mviboilerplate.ui.home;
 import android.support.annotation.NonNull;
 import com.name.mviboilerplate.data.model.NamedResource;
 import com.name.mviboilerplate.data.remote.Responses;
-import com.name.mviboilerplate.ui.base.BaseSchedulerProvider;
+import com.name.mviboilerplate.data.BaseSchedulerProvider;
 import com.name.mviboilerplate.ui.base.mvi.MviBasePresenter;
 import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.Store;

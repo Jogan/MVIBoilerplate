@@ -54,7 +54,7 @@ public class StoreModule {
             .toV1Observable(api.getPokemonList(POKEMON_COUNT), BackpressureStrategy.MISSING))
         .memoryPolicy(MemoryPolicy.builder()
                                   .setExpireAfter(10)
-                                  .setExpireAfterTimeUnit(TimeUnit.SECONDS)
+                                  .setExpireAfterTimeUnit(TimeUnit.MINUTES)
                                   .build())
         .open();
   }

@@ -2,7 +2,7 @@ package com.name.mviboilerplate.ui.base.mvi;
 
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
-import com.name.mviboilerplate.ui.base.BaseSchedulerProvider;
+import com.name.mviboilerplate.data.BaseSchedulerProvider;
 
 public abstract class MviBasePresenter<V extends MviView, VS extends MviViewState>
     extends MviNullObjectBasePresenter<V, VS> {

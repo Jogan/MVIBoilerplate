@@ -1,6 +1,5 @@
 package com.name.mviboilerplate.data;
 
-import com.name.mviboilerplate.ui.base.BaseSchedulerProvider;
 import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
